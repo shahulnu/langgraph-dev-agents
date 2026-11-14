@@ -1,0 +1,79 @@
+diff --git a/app/utils/retry.py b/app/utils/retry.py
+index 7d41c2a..e19b6f0 100644
+--- a/app/utils/retry.py
++++ b/app/utils/retry.py
+@@ -1,17 +1,23 @@
+ import time
+ from typing import Callable, TypeVar
+
+ T = TypeVar("T")
+
+
+-def retry(fn: Callable[[], T], attempts: int = 3, delay: float = 0.5) -> T:
+-    for i in range(attempts):
++def with_retries(fn: Callable[[], T], attempts: int = 3, base_delay: float = 0.5) -> T:
++    """Call fn, retrying on ConnectionError with exponential backoff.
++
++    Waits base_delay, then 2 x base_delay, and so on between attempts.
++    Re-raises the last error once all attempts fail.
++    """
++    if attempts < 1:
++        raise ValueError("attempts must be at least 1")
++    for attempt in range(attempts):
+         try:
+             return fn()
+         except ConnectionError:
+-            if i == attempts - 1:
++            if attempt == attempts - 1:
+                 raise
+-            time.sleep(delay)
++            time.sleep(base_delay * (2**attempt))
+     raise AssertionError("unreachable")
+diff --git a/tests/test_retry.py b/tests/test_retry.py
+new file mode 100644
+index 0000000..4c8a2f1
+--- /dev/null
++++ b/tests/test_retry.py
+@@ -0,0 +1,40 @@
++import pytest
++
++from app.utils import retry as retry_module
++from app.utils.retry import with_retries
++
++
++@pytest.fixture(autouse=True)
++def no_sleep(monkeypatch):
++    delays = []
++    monkeypatch.setattr(retry_module.time, "sleep", delays.append)
++    return delays
++
++
++def test_returns_first_success():
++    assert with_retries(lambda: 42) == 42
++
++
++def test_retries_then_succeeds(no_sleep):
++    calls = iter([ConnectionError(), ConnectionError(), "ok"])
++
++    def fn():
++        result = next(calls)
++        if isinstance(result, Exception):
++            raise result
++        return result
++
++    assert with_retries(fn, attempts=3, base_delay=1) == "ok"
++    assert no_sleep == [1, 2]
++
++
++def test_reraises_after_last_attempt(no_sleep):
++    def fn():
++        raise ConnectionError("down")
++
++    with pytest.raises(ConnectionError):
++        with_retries(fn, attempts=2, base_delay=1)
++    assert no_sleep == [1]
++
++
++def test_rejects_zero_attempts():
++    with pytest.raises(ValueError):
++        with_retries(lambda: 1, attempts=0)

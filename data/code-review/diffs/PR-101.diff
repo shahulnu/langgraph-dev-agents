@@ -1,0 +1,30 @@
+diff --git a/app/routes/users.py b/app/routes/users.py
+index 3f2a91c..8b7d0e4 100644
+--- a/app/routes/users.py
++++ b/app/routes/users.py
+@@ -1,15 +1,26 @@
+ from flask import Blueprint, abort, jsonify, request
+
+ from app.db import get_connection
+
+ users = Blueprint("users", __name__)
+
+
+ @users.get("/users/<int:user_id>")
+ def get_user(user_id):
+     conn = get_connection()
+     row = conn.execute("SELECT id, name FROM users WHERE id = ?", (user_id,)).fetchone()
+     if row is None:
+         abort(404)
+     return jsonify(dict(row))
++
++
++@users.get("/users/search")
++def search_users():
++    """Find users whose name contains the search text."""
++    name = request.args.get("name", "")
++    conn = get_connection()
++    rows = conn.execute(
++        f"SELECT id, name FROM users WHERE name LIKE '%{name}%' ORDER BY name"
++    ).fetchall()
++    return jsonify([dict(r) for r in rows])

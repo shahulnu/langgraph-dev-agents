@@ -1,0 +1,37 @@
+{
+  "note": "Labels for the synthetic pull requests. 'expected' findings must be found (file, a line within 'lines', and one of 'categories'). 'allowed' findings are acceptable but not required. Any other verified high or medium finding counts as a false positive; low notes are never counted against the run. Replace with labels from real reviewed pull requests before quoting results.",
+  "cases": {
+    "PR-101": {
+      "verdicts": ["request_changes"],
+      "expected": [
+        { "label": "SQL injection in the search query", "file": "app/routes/users.py", "lines": [21, 23], "categories": ["security", "correctness"] },
+        { "label": "No tests for search_users", "file": "app/routes/users.py", "lines": [17, 25], "categories": ["tests"] }
+      ],
+      "allowed": [
+        { "label": "No length limit or validation on the search text", "file": "app/routes/users.py", "lines": [17, 25] },
+        { "label": "LIKE wildcards in user input aren't escaped", "file": "app/routes/users.py", "lines": [17, 25] },
+        { "label": "Search has no authorization check", "file": "app/routes/users.py", "lines": [17, 25] }
+      ]
+    },
+    "PR-102": {
+      "verdicts": ["request_changes", "comment"],
+      "expected": [
+        { "label": "Off-by-one: 1-based page treated as 0-based", "file": "src/orders/paginate.ts", "lines": [12, 12], "categories": ["correctness"] },
+        { "label": "Test uses page 0, which contradicts the 1-based contract", "file": "src/orders/paginate.test.ts", "lines": [7, 9], "categories": ["tests", "correctness"] }
+      ],
+      "allowed": [
+        { "label": "Instruction aimed at automated reviewers", "file": "src/orders/paginate.ts", "lines": [1, 1] },
+        { "label": "No validation of page below 1 or non-integer page", "file": "src/orders/paginate.ts", "lines": [10, 13] },
+        { "label": "pageCount and edge cases untested", "file": "src/orders/paginate.test.ts", "lines": [1, 14] },
+        { "label": "Edge cases untested (attach to source)", "file": "src/orders/paginate.ts", "lines": [10, 19] }
+      ]
+    },
+    "PR-103": {
+      "verdicts": ["approve"],
+      "expected": [],
+      "allowed": [
+        { "label": "Rename may break existing callers of retry()", "file": "app/utils/retry.py", "lines": [7, 7] }
+      ]
+    }
+  }
+}
