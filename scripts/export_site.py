@@ -1,6 +1,6 @@
 """Export recorded runs to the portfolio site, so its Replay mode works without this service running.
 
-  uv run python scripts/export_site.py [--site ../healthcare-payer-ai-portfolio]
+  uv run python scripts/export_site.py [--site ../ai-portfolio]
 
 Writes data/code-review/results/<PR>.json and data/code-review/eval-summary.json in the site."""
 
@@ -21,7 +21,7 @@ from app.code_review.graph import run_review  # noqa: E402
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--site", default=str(ROOT.parent / "healthcare-payer-ai-portfolio"))
+    ap.add_argument("--site", default=str(ROOT.parent / "ai-portfolio"))
     args = ap.parse_args()
     site = Path(args.site)
     if not (site / "package.json").exists():

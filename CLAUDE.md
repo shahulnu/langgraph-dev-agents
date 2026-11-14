@@ -1,7 +1,7 @@
 # LangGraph dev agents (Python)
 
 Developer-tools agents for Shahul Ummarali's portfolio, built with LangGraph and LangChain on Claude. The portfolio
-site is `../healthcare-payer-ai-portfolio`; it shows these agents in its "Developer tools" section and serves recorded
+site is `../ai-portfolio`; it shows these agents in its "Developer tools" section and serves recorded
 runs exported from here. README.md has the design, commands and API.
 
 ## Conventions

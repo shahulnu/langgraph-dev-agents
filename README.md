@@ -1,7 +1,7 @@
 # LangGraph dev agents
 
 AI agents for engineering teams, built with **LangGraph** and **LangChain** on Claude. Part of
-[Shahul Ummarali's AI portfolio](https://github.com/shahulnu/healthcare-payer-ai-portfolio): the site shows these agents
+[Shahul Ummarali's AI portfolio](https://github.com/shahulnu/ai-portfolio): the site shows these agents
 in its Developer tools section.
 
 ## Code Review Agent
