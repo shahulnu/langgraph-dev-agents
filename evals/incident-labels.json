@@ -1,0 +1,9 @@
+{
+  "note": "Labels for the synthetic incidents. 'commit' and 'location' (file and line range in v1.4.2) are the true cause; null commit means the deploy didn't cause the symptom. c92e1aa (log format change) is a red herring in every incident. Replace with labels from real postmortems before quoting results.",
+  "incidents": {
+    "INC-201": { "verdict": "confirmed", "caused_by_deploy": true, "commit": "a41c9e2", "location": { "file": "checkout/orders.py", "lines": [15, 18] } },
+    "INC-202": { "verdict": "confirmed", "caused_by_deploy": true, "commit": "7d03b5f", "location": { "file": "checkout/pricing.py", "lines": [9, 16] } },
+    "INC-203": { "verdict": "not_caused_by_deploy", "caused_by_deploy": false, "commit": null, "location": null }
+  },
+  "red_herring_commit": "c92e1aa"
+}

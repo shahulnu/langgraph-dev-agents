@@ -1,0 +1,723 @@
+{
+ "source": "live",
+ "model": "claude-opus-5-5",
+ "recordedAt": "2026-11-14T19:19:15Z",
+ "cases": {
+  "INC-201": {
+   "decisions": [
+    {
+     "reasoning": "No findings yet; first confirm timing of the error spike relative to the 14:10 deploy to see if the deploy is plausibly the cause.",
+     "action": "delegate",
+     "specialist": "metrics_analyst",
+     "task": "When exactly did the checkout 5xx error rate start rising on 2026-11-12, relative to the v1.4.2 deploy at 14:10 UTC? Was there any elevated error rate before 14:10, and are there any other changes (config, infra, dependency) noted around that time?"
+    },
+    {
+     "reasoning": "Errors stepped up right at the v1.4.2 deploy and look tied to gift orders, so a code change in one of the three commits is the likely cause. Next step is to find which commit touches the gift/order checkout path.",
+     "action": "delegate",
+     "specialist": "change_investigator",
+     "task": "Review commits a41c9e2, 7d03b5f, c92e1aa in v1.4.2. Which of them change checkout code paths, especially gift orders (gift message, gift recipient, gift wrap, alternate shipping address)? Summarize each relevant diff and point out any change that could raise an exception for gift orders, citing file and line."
+    },
+    {
+     "reasoning": "Errors began with the v1.4.2 deploy and cluster on gift orders. The leading suspect is the a41c9e2 key rename (KeyError at orders.py:10), but nothing has yet tied it to gift orders, so the actual exceptions behind the 500s are the most direct check.",
+     "action": "delegate",
+     "specialist": "log_analyst",
+     "task": "Search checkout service logs from 14:10 to 15:00 UTC on 2026-11-12 for the 500 errors. What exception types and stack traces appear, with file and line? Are any of them KeyError 'shipping' or 'shipping_address', and do the failing requests involve gift orders (gift=true, gift_message, or an alternate recipient address)? Summarize counts per exception type and compare with 13:30\u201314:10."
+    },
+    {
+     "reasoning": "Logs show KeyError 'shipping_address' in build_gift_order on every failing gift checkout after 14:10, consistent with a41c9e2's key rename, so this looks like a deploy code bug. It needs a reproducing test before I conclude.",
+     "action": "delegate",
+     "specialist": "reproducer",
+     "task": "Write a pytest test that builds a gift order through the normal path (cart from checkout.cart.make_cart with gift=True and a gift_message, plus a shipping address), then calls checkout.orders.build_gift_order, or whichever order-building entry point handles gift orders. Assert that it returns an order without raising KeyError and that the order's ship-to address matches the cart's shipping address. The test should fail on v1.4.2 with KeyError 'shipping_address' and pass on v1.4.1."
+    },
+    {
+     "reasoning": "The reproducer proved that v1.4.2 introduced the gift-order KeyError. However, the faulty line in build_gift_order (logs suggest checkout/orders.py:18) has only been inferred from a stack trace and not confirmed in source, so the code_reader should cite it.",
+     "action": "delegate",
+     "specialist": "code_reader",
+     "task": "In v1.4.2, read checkout/orders.py build_gift_order (and compare with v1.4.1). Cite the exact line that reads cart['shipping_address'] (code:checkout/orders.py:<line>@v1.4.2), confirm it raises KeyError for carts made by make_cart, which now use the 'shipping' key, and list any other places in v1.4.2 still using the old 'shipping_address' key."
+    },
+    {
+     "reasoning": "The cause is proven: commit a41c9e2 renamed the cart key to 'shipping' but missed build_gift_order at checkout/orders.py:18@v1.4.2, so every gift order raises KeyError and returns a 500. The logs, the timing, the code reading and the repro test (passes on v1.4.1, fails on v1.4.2) all agree; separately, 7d03b5f applies percent coupons twice and should also be fixed.",
+     "action": "conclude",
+     "specialist": null,
+     "task": ""
+    }
+   ],
+   "specialists": [
+    {
+     "name": "metrics_analyst",
+     "calls": [
+      {
+       "tool": "get_metrics",
+       "args": {
+        "name": "checkout_5xx_rate"
+       }
+      },
+      {
+       "tool": "get_deploys",
+       "args": {}
+      },
+      {
+       "tool": "get_notes",
+       "args": {}
+      },
+      {
+       "tool": "get_metrics",
+       "args": {
+        "name": "error_rate_pct"
+       }
+      },
+      {
+       "tool": "get_metrics",
+       "args": {
+        "name": "payment_timeouts_per_min"
+       }
+      },
+      {
+       "tool": "get_metrics",
+       "args": {
+        "name": "orders_per_min"
+       }
+      }
+     ],
+     "submitted": {
+      "summary": "The error rate jumped in the first window after the deploy. It went from 0.18% at 14:00\u201314:09 to 6.06% at 14:10\u201314:19, then held flat at about 6.1\u20136.2% through 14:59. The metric only has 10-minute averages, so the onset can only be placed somewhere in 14:10\u201314:19, not to the minute. Before 14:10 the rate was normal (0.15\u20130.29% from 13:30 to 14:09). Payment timeouts stayed flat, so a payment-provider cause looks unlikely, and no config, infra or dependency change was recorded.",
+      "evidence": [
+       {
+        "ref": "metric:error_rate_pct",
+        "detail": "0.15\u20130.29% from 13:30 to 14:09, then 6.06% at 14:10\u201314:19 and 6.09\u20136.19% through 14:59. The step lines up with the deploy window. This is the overall error rate; there is no checkout-only 5xx metric."
+       },
+       {
+        "ref": "deploy:v1.4.2",
+        "detail": "Deployed 14:10:00Z with commits a41c9e2, 7d03b5f, c92e1aa. The only other deploy is v1.4.1 on 2026-11-05."
+       },
+       {
+        "ref": "metric:payment_timeouts_per_min",
+        "detail": "Flat at 0.1\u20130.4/min before and after 14:10, so payment timeouts don't explain the errors."
+       },
+       {
+        "ref": "metric:orders_per_min",
+        "detail": "Small drop from about 20.1\u201320.4 to 18.7\u201319.4/min after 14:10, consistent with about 6% of orders failing."
+       },
+       {
+        "ref": "note:N1",
+        "detail": "14:21 support ticket: customers get errors when sending an order as a gift, which suggests the failures hit one specific checkout path. No notes mention config, infra or vendor changes."
+       }
+      ],
+      "confidence": "high"
+     }
+    },
+    {
+     "name": "change_investigator",
+     "calls": [
+      {
+       "tool": "list_commits",
+       "args": {}
+      },
+      {
+       "tool": "show_diff",
+       "args": {
+        "sha": "a41c9e2"
+       }
+      },
+      {
+       "tool": "show_diff",
+       "args": {
+        "sha": "7d03b5f"
+       }
+      },
+      {
+       "tool": "show_diff",
+       "args": {
+        "sha": "c92e1aa"
+       }
+      }
+     ],
+     "submitted": {
+      "summary": "None of the three v1.4.2 commits touches gift-specific code: no gift message, recipient, wrap or alternate-address logic appears in any diff. The only change that could plausibly raise an exception in checkout is a41c9e2. It renamed the cart key \"shipping_address\" to \"shipping\" in checkout/cart.py, and checkout/orders.py now reads cart[\"shipping\"]. Any cart built outside make_cart, or saved before the deploy, that still uses the old key would hit a KeyError. A gift or alternate-address path is a plausible place for that, but I can't confirm it from these diffs. 7d03b5f applies percent coupons twice (it overcharges no one but over-discounts, a wrong-price bug that raises nothing), and c92e1aa only changes the log format.",
+      "evidence": [
+       {
+        "ref": "commit:a41c9e2",
+        "detail": "checkout/cart.py make_cart (around line 4\u20137): the parameter and dict key change from shipping_address to shipping; the gift and gift_message fields are unchanged."
+       },
+       {
+        "ref": "code:checkout/orders.py:10@v1.4.2",
+        "detail": "\"ship_to\": cart[\"shipping\"] \u2014 any cart dict still built with the old \"shipping_address\" key (other callers, saved carts, maybe a gift/alternate-address flow) would raise a KeyError here and return a 500."
+       },
+       {
+        "ref": "commit:7d03b5f",
+        "detail": "checkout/pricing.py compute_total: the loop already takes percent coupons off, then lines added around 14\u201316 subtract them a second time. Totals come out too low (floored at 0 by max). It's a pricing bug, not an exception, and has nothing to do with gifts."
+       },
+       {
+        "ref": "commit:c92e1aa",
+        "detail": "checkout/logging_config.py:3 only changes LOG_FORMAT to a JSON-like string. That can produce invalid JSON when a message contains quotes, but the formatting itself doesn't raise; ruled out as the 500 source."
+       },
+       {
+        "ref": "note:N1",
+        "detail": "The errors are tied to gift orders. The only diff that touches shipping or address data is a41c9e2, so it's the leading suspect; next step is to grep for callers that use the 'shipping_address' key or pass it as a keyword argument."
+       }
+      ],
+      "confidence": "medium"
+     }
+    },
+    {
+     "name": "log_analyst",
+     "calls": [
+      {
+       "tool": "error_summary",
+       "args": {}
+      },
+      {
+       "tool": "get_notes",
+       "args": {}
+      },
+      {
+       "tool": "search_logs",
+       "args": {
+        "query": "KeyError",
+        "since": "2026-11-12T13:30:00Z",
+        "until": "2026-11-12T15:00:00Z"
+       }
+      },
+      {
+       "tool": "search_logs",
+       "args": {
+        "query": "gift",
+        "since": "2026-11-12T13:30:00Z",
+        "until": "2026-11-12T15:00:00Z",
+        "limit": 50
+       }
+      },
+      {
+       "tool": "search_logs",
+       "args": {
+        "query": "gift=true",
+        "since": "2026-11-12T14:10:00Z",
+        "until": "2026-11-12T15:00:00Z"
+       }
+      },
+      {
+       "tool": "search_logs",
+       "args": {
+        "query": "percent:10",
+        "since": "2026-11-12T14:10:00Z",
+        "until": "2026-11-12T15:00:00Z",
+        "limit": 5
+       }
+      }
+     ],
+     "submitted": {
+      "summary": "The logs show one exception type behind the checkout 500s from 14:10 to 15:00: KeyError: 'shipping_address' at checkout/orders.py line 18 in build_gift_order. It happened 7 times, from 14:11:12 to 14:53:12, and every one was a POST /checkout 500. From 13:30 to 14:10 there were 0 errors, and 5 gift=true orders went through. After 14:10 not a single gift=true order succeeded. So the failures are limited to gift orders, which is consistent with a41c9e2's rename of shipping_address to shipping. The failing key is the old name 'shipping_address', not 'shipping': build_gift_order seems to still read the old key from carts that now use 'shipping'. Line 18 is my reading of the trace; I haven't seen the code. Separately, the logs confirm the 7d03b5f percent-coupon double-discount (no errors, just wrong totals).",
+      "evidence": [
+       {
+        "ref": "log:L0050",
+        "detail": "First 500 at 14:11:12: KeyError: 'shipping_address', File checkout/orders.py line 18, in build_gift_order, order O-58042."
+       },
+       {
+        "ref": "log:L0097",
+        "detail": "Last of 7 identical KeyError 500s, at 14:53:12; the others are L0057, L0065, L0073, L0080 and L0089, about one every 7 minutes."
+       },
+       {
+        "ref": "log:L0010",
+        "detail": "Only other warning type: PayFast charge timeout, retry succeeded. 2 before the deploy and 1 after, so not the cause."
+       },
+       {
+        "ref": "log:L0041",
+        "detail": "Gift orders succeeded before the deploy: 5 gift=true orders placed 13:30\u201314:10 (also L0008, L0017, L0025, L0032). The search for gift=true after 14:10 returned 0 lines."
+       },
+       {
+        "ref": "log:L0052",
+        "detail": "Side issue: percent:10 coupon on a 100.00 subtotal now totals 80.00, versus 90.00 before the deploy (L0005). The discount is applied twice, matching 7d03b5f. No exception."
+       },
+       {
+        "ref": "note:N1",
+        "detail": "14:21 support ticket: errors when sending an order as a gift, which matches build_gift_order in the stack traces."
+       },
+       {
+        "ref": "commit:a41c9e2",
+        "detail": "Renamed the cart key shipping_address to shipping; build_gift_order still reads the old key, which explains the KeyError."
+       }
+      ],
+      "confidence": "high"
+     }
+    },
+    {
+     "name": "reproducer",
+     "calls": [
+      {
+       "tool": "read_file",
+       "args": {
+        "path": "checkout/cart.py"
+       }
+      },
+      {
+       "tool": "read_file",
+       "args": {
+        "path": "checkout/orders.py"
+       }
+      },
+      {
+       "tool": "read_file",
+       "args": {
+        "path": "checkout/cart.py",
+        "version": "v1.4.1"
+       }
+      },
+      {
+       "tool": "read_file",
+       "args": {
+        "path": "checkout/orders.py",
+        "version": "v1.4.1"
+       }
+      },
+      {
+       "tool": "read_file",
+       "args": {
+        "path": "checkout/pricing.py"
+       }
+      }
+     ],
+     "submitted": {
+      "test_code": "from checkout.cart import make_cart\nfrom checkout.orders import build_gift_order, place_order\n\n\nADDRESS = {\"name\": \"Ana Recipient\", \"line1\": \"1 Gift St\", \"city\": \"Lisbon\", \"zip\": \"1000-001\"}\nITEMS = [{\"sku\": \"MUG-1\", \"price\": 25.0, \"qty\": 2}]\n\n\ndef _gift_cart():\n    # positional args: shipping param was renamed between versions\n    return make_cart(ITEMS, ADDRESS, True, \"Happy birthday!\")\n\n\ndef test_build_gift_order_from_make_cart():\n    order = build_gift_order(\"O-1\", _gift_cart(), [])\n    assert order[\"ship_to\"] == ADDRESS\n    assert order[\"gift_message\"] == \"Happy birthday!\"\n    assert order[\"hide_prices\"] is True\n\n\ndef test_place_order_routes_gift_without_keyerror():\n    order = place_order(\"O-2\", _gift_cart(), [])\n    assert order[\"ship_to\"] == ADDRESS\n    assert order[\"total\"] == 50.0\n",
+      "what_it_checks": "A gift cart built by make_cart (positional args, with gift=True and a gift message) goes through build_gift_order/place_order without raising, and the order's ship_to equals the cart's shipping address."
+     }
+    },
+    {
+     "name": "code_reader",
+     "calls": [
+      {
+       "tool": "read_file",
+       "args": {
+        "path": "checkout/orders.py"
+       }
+      },
+      {
+       "tool": "read_file",
+       "args": {
+        "path": "checkout/orders.py",
+        "version": "v1.4.1"
+       }
+      },
+      {
+       "tool": "grep_code",
+       "args": {
+        "pattern": "shipping_address"
+       }
+      },
+      {
+       "tool": "read_file",
+       "args": {
+        "path": "checkout/cart.py"
+       }
+      },
+      {
+       "tool": "read_file",
+       "args": {
+        "path": "checkout/cart.py",
+        "version": "v1.4.1"
+       }
+      }
+     ],
+     "submitted": {
+      "summary": "The line that fails is checkout/orders.py:18 in v1.4.2: `order[\"ship_to\"] = cart[\"shipping_address\"]` in build_gift_order. Commit a41c9e2 changed make_cart to store the address under the key \"shipping\" and updated build_order (line 10) to match, but missed line 18. So any gift cart built by make_cart raises KeyError 'shipping_address': place_order sends carts with gift set to build_gift_order (lines 24\u201325), and line 16 succeeds before line 18 fails. Line 18 is the only place in v1.4.2 that still uses 'shipping_address'. In v1.4.1, make_cart and both readers all used that key.",
+      "evidence": [
+       {
+        "ref": "code:checkout/orders.py:18@v1.4.2",
+        "detail": "build_gift_order reads cart[\"shipping_address\"], the old key. This is the line in the log traces."
+       },
+       {
+        "ref": "code:checkout/cart.py:7@v1.4.2",
+        "detail": "make_cart now stores the address under \"shipping\" and has no 'shipping_address' key, so line 18 raises KeyError."
+       },
+       {
+        "ref": "code:checkout/orders.py:10@v1.4.2",
+        "detail": "build_order was updated to cart[\"shipping\"], so non-gift orders still work and line 16 succeeds before line 18 fails."
+       },
+       {
+        "ref": "code:checkout/orders.py:24@v1.4.2",
+        "detail": "place_order sends carts with gift set to build_gift_order (line 25), so only gift orders fail."
+       },
+       {
+        "ref": "code:checkout/cart.py:7@v1.4.1",
+        "detail": "Before the deploy, make_cart stored 'shipping_address', and orders.py lines 10 and 18 both read it, so gift orders worked."
+       },
+       {
+        "ref": "code:checkout/orders.py:18@v1.4.1",
+        "detail": "Line 18 is the same in v1.4.1; the rename in a41c9e2 broke it without touching it."
+       },
+       {
+        "ref": "commit:a41c9e2",
+        "detail": "The rename to 'shipping' covered cart.py and build_order but missed build_gift_order. Searching v1.4.2 for 'shipping_address' finds only orders.py:18, so there are no other old-key users."
+       },
+       {
+        "ref": "log:L0050",
+        "detail": "The logged KeyError 'shipping_address' at orders.py line 18 in build_gift_order matches the code."
+       }
+      ],
+      "confidence": "high"
+     }
+    }
+   ],
+   "report": {
+    "root_cause": "Commit a41c9e2 in v1.4.2 renamed the cart key \"shipping_address\" to \"shipping\" in make_cart and updated build_order. It missed build_gift_order, which still reads cart[\"shipping_address\"] at checkout/orders.py:18. Every gift order now raises KeyError 'shipping_address' and returns a 500, while non-gift orders still work.",
+    "caused_by_deploy": true,
+    "suspected_commit": "a41c9e2",
+    "suspected_location": "checkout/orders.py:18",
+    "evidence": [
+     "metric:error_rate_pct",
+     "deploy:v1.4.2",
+     "metric:orders_per_min",
+     "note:N1",
+     "log:L0050",
+     "log:L0097",
+     "log:L0041",
+     "commit:a41c9e2",
+     "code:checkout/orders.py:18@v1.4.2",
+     "code:checkout/cart.py:7@v1.4.2",
+     "code:checkout/orders.py:10@v1.4.2",
+     "code:checkout/orders.py:24@v1.4.2",
+     "code:checkout/cart.py:7@v1.4.1",
+     "test:repro"
+    ],
+    "ruled_out": [
+     "Payment provider issues: payment timeouts stayed flat at 0.1\u20130.4/min, and PayFast timeout warnings retried successfully (metric:payment_timeouts_per_min, log:L0010).",
+     "Commit 7d03b5f: its double-applied percent coupon gives wrong, too-low totals but raises no exception (log:L0052); it is a separate bug that still needs a fix.",
+     "Commit c92e1aa: it only changes LOG_FORMAT and does not raise.",
+     "Config, infra or dependency changes: none were recorded around 14:10, and the only other deploy was v1.4.1 on 2026-11-05."
+    ],
+    "suggested_fix": "Change checkout/orders.py:18 to read cart[\"shipping\"] to match a41c9e2's rename, or roll back to v1.4.1 for immediate relief. Separately, fix the 7d03b5f coupon double-discount.",
+    "confidence": "high"
+   }
+  },
+  "INC-202": {
+   "decisions": [
+    {
+     "reasoning": "AOV dropped ~10% with no errors, possibly coinciding with the 14:10 deploy; first confirm timing of the drop relative to the deploy.",
+     "action": "delegate",
+     "specialist": "metrics_analyst",
+     "task": "When exactly did average order value (and related metrics like order totals, discount amounts, tax, item counts, order volume) start changing on 2026-11-12? Does the change line up with the v1.4.2 deploy at 14:10 UTC or start earlier? Note any other deploys or config changes around that time."
+    },
+    {
+     "reasoning": "The AOV drop lines up with the deploy, and support notes report coupons applying double their discount, so a coupon-discount bug in v1.4.2 is likely. Next, find which commit changed discount logic.",
+     "action": "delegate",
+     "specialist": "change_investigator",
+     "task": "Review commits a41c9e2, 7d03b5f, c92e1aa in v1.4.2 for any change to coupon/discount calculation or application (e.g., discount applied twice, percentage doubled, applied both per-item and per-order). Cite the commit and the file/line of the suspicious change."
+    },
+    {
+     "reasoning": "Commit 7d03b5f's compute_total appears to subtract each percent coupon twice (pricing.py lines 11 and 15\u201316), and the timing and support notes match. A reproducer test is needed to prove that v1.4.2 introduced the bug before concluding.",
+     "action": "delegate",
+     "specialist": "reproducer",
+     "task": "Write a pytest test for checkout/pricing.py compute_total. Use a cart with subtotal 100.00 and a single 10% percent coupon (in the coupon dict format compute_total expects), and assert the result reflects exactly a 10% discount (90.00 before any tax/shipping the function adds; compare against the no-coupon total minus 10% of subtotal). The test should fail on v1.4.2, where the discount comes out to 20%, and pass on v1.4.1."
+    },
+    {
+     "reasoning": "Repro proves commit 7d03b5f in v1.4.2 double-applies percent coupons, and the faulty lines are cited (checkout/pricing.py:15-16@v1.4.2, plus the per-coupon subtraction at line 11). The timing matches the deploy, so the cause is proven.",
+     "action": "conclude",
+     "specialist": null,
+     "task": ""
+    }
+   ],
+   "specialists": [
+    {
+     "name": "metrics_analyst",
+     "calls": [
+      {
+       "tool": "get_metrics",
+       "args": {
+        "name": "list"
+       }
+      },
+      {
+       "tool": "get_deploys",
+       "args": {}
+      },
+      {
+       "tool": "get_notes",
+       "args": {}
+      },
+      {
+       "tool": "get_metrics",
+       "args": {
+        "name": "avg_order_value_usd"
+       }
+      },
+      {
+       "tool": "get_metrics",
+       "args": {
+        "name": "orders_per_min"
+       }
+      },
+      {
+       "tool": "get_metrics",
+       "args": {
+        "name": "coupon_redemptions_per_min"
+       }
+      },
+      {
+       "tool": "get_metrics",
+       "args": {
+        "name": "error_rate_pct"
+       }
+      }
+     ],
+     "submitted": {
+      "summary": "Average order value stepped down in the 14:10\u201314:19 UTC bucket, the same bucket as the v1.4.2 deploy (14:10). It went from 74.25 to 71.34, about 3.9% lower, and stayed at 71.3\u201371.8 afterwards. Before that it was flat to slightly rising (73.95\u201374.25), so nothing points to an earlier start. Order volume, coupon redemptions and error rate show no change at the deploy. The pattern fits coupons being over-discounted, as in support notes N1 and N2 (\"10% coupon took 20% off\"), rather than lost orders or failures. Two caveats: the drop I measured is about 4%, not the ~10% on the finance dashboard, and I had no metrics for order totals, discount amount, tax or item counts.",
+      "evidence": [
+       {
+        "ref": "metric:avg_order_value_usd",
+        "detail": "About 74.0\u201374.25 from 13:30 to 14:09, then 71.34 at 14:10\u201314:19 and 71.27\u201371.82 through 14:59: a one-step drop of about 3.9% starting in the deploy bucket."
+       },
+       {
+        "ref": "deploy:v1.4.2",
+        "detail": "Deployed at 14:10:00Z (commits a41c9e2, 7d03b5f, c92e1aa); the only other deploy is v1.4.1 on 2026-11-05, and no config changes are recorded."
+       },
+       {
+        "ref": "metric:orders_per_min",
+        "detail": "Flat at about 19.3\u201320.5 before and after 14:10, so order volume did not change."
+       },
+       {
+        "ref": "metric:coupon_redemptions_per_min",
+        "detail": "Steady at about 4.6\u20135.3; coupon use did not jump, so the drop is not from more coupons being used."
+       },
+       {
+        "ref": "metric:error_rate_pct",
+        "detail": "Steady at 0.17\u20130.23%, which matches no error alerts firing."
+       },
+       {
+        "ref": "note:N1",
+        "detail": "14:37 support report: a 10% welcome coupon took 20% off, after the deploy."
+       },
+       {
+        "ref": "note:N2",
+        "detail": "14:52 support report: a receipt showed double the coupon discount."
+       }
+      ],
+      "confidence": "high"
+     }
+    },
+    {
+     "name": "change_investigator",
+     "calls": [
+      {
+       "tool": "list_commits",
+       "args": {}
+      },
+      {
+       "tool": "show_diff",
+       "args": {
+        "sha": "a41c9e2"
+       }
+      },
+      {
+       "tool": "show_diff",
+       "args": {
+        "sha": "7d03b5f"
+       }
+      },
+      {
+       "tool": "show_diff",
+       "args": {
+        "sha": "c92e1aa"
+       }
+      }
+     ],
+     "submitted": {
+      "summary": "Commit 7d03b5f (checkout/pricing.py, compute_total) takes every percent coupon off twice. The new loop already subtracts subtotal*value/100 for each percent coupon (line 11), and then lines 15\u201316 sum the percent values and subtract subtotal*percent/100 again. So a 10% coupon now takes 20% off, which matches N1 and N2. The other two commits don't touch discount logic: a41c9e2 renames shipping_address to shipping and leaves the compute_total call unchanged, and c92e1aa only changes the log format.",
+      "evidence": [
+       {
+        "ref": "code:checkout/pricing.py:11@v1.4.2",
+        "detail": "Inside the new `for c in coupons` loop, `total -= subtotal * c[\"value\"] / 100` takes off each percent coupon once."
+       },
+       {
+        "ref": "code:checkout/pricing.py:15@v1.4.2",
+        "detail": "After the loop, `percent = sum(...)` and then line 16 `total -= subtotal * percent / 100` take the same percent off a second time."
+       },
+       {
+        "ref": "commit:7d03b5f",
+        "detail": "'Allow stacking a percent coupon with a fixed coupon' turned the single-coupon `if coupons: c = coupons[0]` into a loop and added the extra percent subtraction."
+       },
+       {
+        "ref": "commit:a41c9e2",
+        "detail": "Ruled out: it only renames the shipping_address key to shipping in cart.py and orders.py, and orders.py calls compute_total exactly as before."
+       },
+       {
+        "ref": "commit:c92e1aa",
+        "detail": "Ruled out: it only changes LOG_FORMAT to JSON in logging_config.py."
+       },
+       {
+        "ref": "deploy:v1.4.2",
+        "detail": "7d03b5f shipped in v1.4.2 at 14:10Z, the same bucket where avg_order_value stepped down."
+       },
+       {
+        "ref": "note:N1",
+        "detail": "Support saw a 10% coupon take 20% off, exactly what the double subtraction would do."
+       }
+      ],
+      "confidence": "high"
+     }
+    },
+    {
+     "name": "reproducer",
+     "calls": [
+      {
+       "tool": "read_file",
+       "args": {
+        "path": "checkout/pricing.py"
+       }
+      },
+      {
+       "tool": "read_file",
+       "args": {
+        "path": "checkout/pricing.py",
+        "version": "v1.4.1"
+       }
+      }
+     ],
+     "submitted": {
+      "test_code": "import math\nfrom checkout.pricing import compute_total\n\n\ndef test_single_percent_coupon_takes_exactly_ten_percent():\n    items = [{\"price\": 100.00, \"qty\": 1}]\n    coupon = {\"kind\": \"percent\", \"value\": 10}\n    base = compute_total(items, [])\n    discounted = compute_total(items, [coupon])\n    assert math.isclose(base, 100.00, abs_tol=0.005)\n    assert math.isclose(discounted, base - 10.00, abs_tol=0.005)\n    assert math.isclose(discounted, 90.00, abs_tol=0.005)\n",
+      "what_it_checks": "A single 10% percent coupon on a 100.00 subtotal gives exactly 90.00 (no-coupon total minus 10%), not 80.00."
+     }
+    }
+   ],
+   "report": {
+    "root_cause": "Commit 7d03b5f in v1.4.2 changed compute_total in checkout/pricing.py to support coupon stacking, and in doing so takes every percent coupon off twice. The loop subtracts it at line 11, then lines 15\u201316 sum the percents and subtract them again, so a 10% coupon takes 20% off. Average order value stepped down in the 14:10 deploy bucket with no change in order volume, coupon use or errors, which explains why no alerts fired.",
+    "caused_by_deploy": true,
+    "suspected_commit": "7d03b5f",
+    "suspected_location": "checkout/pricing.py:15",
+    "evidence": [
+     "code:checkout/pricing.py:11@v1.4.2",
+     "code:checkout/pricing.py:15@v1.4.2",
+     "commit:7d03b5f",
+     "test:repro",
+     "metric:avg_order_value_usd",
+     "deploy:v1.4.2",
+     "metric:orders_per_min",
+     "metric:coupon_redemptions_per_min",
+     "metric:error_rate_pct",
+     "note:N1",
+     "note:N2"
+    ],
+    "ruled_out": [
+     "Commit a41c9e2 only renames shipping_address to shipping, and compute_total is still called the same way.",
+     "Commit c92e1aa only changes the log format to JSON.",
+     "An earlier start or another change is unlikely: AOV was flat before 14:10, and there were no other deploys since v1.4.1 on 2026-11-05 and no recorded config changes.",
+     "Lost or failed orders are unlikely: orders_per_min and error_rate_pct were unchanged.",
+     "More coupons being redeemed is unlikely: coupon_redemptions_per_min stayed steady at about 4.6\u20135.3."
+    ],
+    "suggested_fix": "In compute_total, remove the second percent subtraction after the loop (the percent sum at line 15 and the subtraction at line 16) so each percent coupon is applied once, and add the reproduction test to the suite. Rolling back to v1.4.1 is also an option for immediate mitigation.",
+    "confidence": "high"
+   }
+  },
+  "INC-203": {
+   "decisions": [
+    {
+     "reasoning": "Payment timeouts reportedly began around the 14:10 deploy, but we haven't checked whether they actually started before or after it. Metrics should confirm the timing first.",
+     "action": "delegate",
+     "specialist": "metrics_analyst",
+     "task": "When did payment timeout rates and payment latency start rising relative to the v1.4.2 deploy at 2026-11-12T14:10:00Z? Report the onset time, how steep the rise was, and any other changes around then (traffic, payment provider latency, config changes). Use metrics, because the log format changed at 14:10 and log counts may not compare across that point."
+    },
+    {
+     "reasoning": "Timeouts rose at 13:50, 20 minutes before the 14:10 deploy, and plateaued with no step at the deploy. This matches PayFast's reported us-east degradation since 13:50, so the cause is the external provider, not v1.4.2.",
+     "action": "conclude",
+     "specialist": null,
+     "task": ""
+    }
+   ],
+   "specialists": [
+    {
+     "name": "metrics_analyst",
+     "calls": [
+      {
+       "tool": "get_metrics",
+       "args": {
+        "name": "list"
+       }
+      },
+      {
+       "tool": "get_deploys",
+       "args": {}
+      },
+      {
+       "tool": "get_notes",
+       "args": {}
+      },
+      {
+       "tool": "get_metrics",
+       "args": {
+        "name": "payment_timeouts_per_min"
+       }
+      },
+      {
+       "tool": "get_metrics",
+       "args": {
+        "name": "error_rate_pct"
+       }
+      },
+      {
+       "tool": "get_metrics",
+       "args": {
+        "name": "orders_per_min"
+       }
+      },
+      {
+       "tool": "get_metrics",
+       "args": {
+        "name": "avg_order_value_usd"
+       }
+      }
+     ],
+     "submitted": {
+      "summary": "Payment timeouts started rising in the 13:50\u201313:59 bucket, about 20 minutes before the v1.4.2 deploy at 14:10. They jumped sharply, from 0.16 to 2.73/min (about 17x), reached a plateau of about 3.57/min at 14:00\u201314:09, and stayed flat after the deploy. The timing matches PayFast's report of degraded us-east service since 13:50, so the deploy and the log-format change are unlikely to be the cause. No payment-latency metric exists, so I couldn't measure latency directly.",
+      "evidence": [
+       {
+        "ref": "metric:payment_timeouts_per_min",
+        "detail": "Timeouts were 0.14\u20130.16/min through 13:49, rose to 2.73 at 13:50\u201313:59 and 3.57 at 14:00\u201314:09, then held at 3.40\u20133.59 after 14:10, with no step at the deploy."
+       },
+       {
+        "ref": "metric:error_rate_pct",
+        "detail": "Error rate followed the same pattern: 0.12% at 13:40\u201313:49, 2.26% at 13:50\u201313:59 and 2.83% at 14:00\u201314:09, then 2.71\u20132.93% after the deploy, so the rise came before 14:10."
+       },
+       {
+        "ref": "note:N1",
+        "detail": "PayFast's status page (14:02) reports higher API latency and timeouts in us-east since 13:50 UTC, the same bucket where our metrics rise."
+       },
+       {
+        "ref": "metric:orders_per_min",
+        "detail": "Traffic stayed flat at about 19.5\u201320.3/min throughout, so a traffic surge is ruled out."
+       },
+       {
+        "ref": "metric:avg_order_value_usd",
+        "detail": "Average order value stayed flat at about $73\u201375, so there was no change in order mix."
+       },
+       {
+        "ref": "deploy:v1.4.2",
+        "detail": "The deploy at 14:10 came after the onset at 13:50 and produced no further step in any metric. No config-change record or payment-latency metric is available to check."
+       }
+      ],
+      "confidence": "high"
+     }
+    }
+   ],
+   "report": {
+    "root_cause": "Payment timeouts began rising at 13:50 UTC, about 20 minutes before the v1.4.2 deploy, and match PayFast's reported us-east API latency and timeout degradation since 13:50. The most likely cause is the external payment provider (PayFast) degradation, not our deploy. Timeouts plateaued at 14:00\u201314:09 and showed no additional step at 14:10.",
+    "caused_by_deploy": false,
+    "suspected_commit": null,
+    "suspected_location": null,
+    "evidence": [
+     "metric:payment_timeouts_per_min",
+     "metric:error_rate_pct",
+     "note:N1",
+     "metric:orders_per_min",
+     "metric:avg_order_value_usd",
+     "deploy:v1.4.2"
+    ],
+    "ruled_out": [
+     "The v1.4.2 deploy is ruled out as the trigger because timeouts and error rate rose at 13:50, before the 14:10 deploy, with no further step afterward.",
+     "The log-format change is ruled out as an artifact because the rise appears in metrics, not just log counts, and predates 14:10.",
+     "A traffic surge is ruled out because orders per minute stayed flat at about 19.5\u201320.3/min.",
+     "A change in order mix is ruled out because average order value stayed flat at about $73\u201375."
+    ],
+    "suggested_fix": "Treat this as a PayFast us-east incident: track the provider status, consider failover to another region or provider or extended retry/backoff if available, and reconcile unpaid orders once PayFast recovers. No rollback of v1.4.2 is indicated, though config changes could not be checked because no record was available.",
+    "confidence": "medium"
+   }
+  }
+ }
+}

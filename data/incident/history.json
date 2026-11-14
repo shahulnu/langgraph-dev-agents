@@ -1,0 +1,12 @@
+{
+  "note": "Synthetic repository history for the Incident Debugger demo. Each commit touches its own files, so its diff is those files between v1.4.1 and v1.4.2.",
+  "deploys": [
+    { "version": "v1.4.1", "at": "2026-11-05T15:30:00Z", "commits": [] },
+    { "version": "v1.4.2", "at": "2026-11-12T14:10:00Z", "commits": ["a41c9e2", "7d03b5f", "c92e1aa"] }
+  ],
+  "commits": [
+    { "sha": "a41c9e2", "title": "Rename shipping_address to shipping in the cart schema", "author": "dev-lee", "at": "2026-11-12T11:05:00Z", "files": ["checkout/cart.py", "checkout/orders.py"] },
+    { "sha": "7d03b5f", "title": "Allow stacking a percent coupon with a fixed coupon", "author": "dev-sam", "at": "2026-11-12T12:40:00Z", "files": ["checkout/pricing.py"] },
+    { "sha": "c92e1aa", "title": "Switch service logs to JSON format", "author": "dev-kim", "at": "2026-11-12T13:20:00Z", "files": ["checkout/logging_config.py"] }
+  ]
+}

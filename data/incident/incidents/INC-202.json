@@ -1,0 +1,2297 @@
+{
+ "id": "INC-202",
+ "title": "Average order value dropped",
+ "teaser": "No errors at all, but customers are paying less than they should",
+ "opened": "2026-11-12T15:05:00Z",
+ "description": "Finance dashboard: average order value down about 10% since early afternoon. No error alerts fired. The v1.4.2 deploy went out at 14:10 UTC.",
+ "logs": [
+  {
+   "id": "L0001",
+   "ts": "2026-11-12T13:30:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=30",
+   "format": "text"
+  },
+  {
+   "id": "L0002",
+   "ts": "2026-11-12T13:30:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58001 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "text"
+  },
+  {
+   "id": "L0003",
+   "ts": "2026-11-12T13:31:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58002 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "text"
+  },
+  {
+   "id": "L0004",
+   "ts": "2026-11-12T13:32:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58003 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "text"
+  },
+  {
+   "id": "L0005",
+   "ts": "2026-11-12T13:33:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58004 gift=false subtotal=40.00 coupons=percent:10 total=36.00",
+   "format": "text"
+  },
+  {
+   "id": "L0006",
+   "ts": "2026-11-12T13:34:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58005 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "text"
+  },
+  {
+   "id": "L0007",
+   "ts": "2026-11-12T13:35:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58006 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "text"
+  },
+  {
+   "id": "L0008",
+   "ts": "2026-11-12T13:36:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58007 gift=true subtotal=60.00 coupons=none total=60.00",
+   "format": "text"
+  },
+  {
+   "id": "L0009",
+   "ts": "2026-11-12T13:37:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58008 gift=false subtotal=60.00 coupons=percent:10 total=54.00",
+   "format": "text"
+  },
+  {
+   "id": "L0010",
+   "ts": "2026-11-12T13:37:30Z",
+   "level": "WARN",
+   "logger": "checkout.payments",
+   "message": "PayFast charge timeout after 8s; retry 1 succeeded",
+   "format": "text"
+  },
+  {
+   "id": "L0011",
+   "ts": "2026-11-12T13:38:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58009 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "text"
+  },
+  {
+   "id": "L0012",
+   "ts": "2026-11-12T13:39:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58010 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "text"
+  },
+  {
+   "id": "L0013",
+   "ts": "2026-11-12T13:40:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=38",
+   "format": "text"
+  },
+  {
+   "id": "L0014",
+   "ts": "2026-11-12T13:40:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58011 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "text"
+  },
+  {
+   "id": "L0015",
+   "ts": "2026-11-12T13:41:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58012 gift=false subtotal=60.00 coupons=percent:10 total=54.00",
+   "format": "text"
+  },
+  {
+   "id": "L0016",
+   "ts": "2026-11-12T13:42:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58013 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "text"
+  },
+  {
+   "id": "L0017",
+   "ts": "2026-11-12T13:43:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58014 gift=true subtotal=80.00 coupons=none total=80.00",
+   "format": "text"
+  },
+  {
+   "id": "L0018",
+   "ts": "2026-11-12T13:44:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58015 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "text"
+  },
+  {
+   "id": "L0019",
+   "ts": "2026-11-12T13:45:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58016 gift=false subtotal=60.00 coupons=percent:10 total=54.00",
+   "format": "text"
+  },
+  {
+   "id": "L0020",
+   "ts": "2026-11-12T13:46:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58017 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "text"
+  },
+  {
+   "id": "L0021",
+   "ts": "2026-11-12T13:47:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58018 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "text"
+  },
+  {
+   "id": "L0022",
+   "ts": "2026-11-12T13:48:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58019 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "text"
+  },
+  {
+   "id": "L0023",
+   "ts": "2026-11-12T13:49:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58020 gift=false subtotal=120.00 coupons=percent:10 total=108.00",
+   "format": "text"
+  },
+  {
+   "id": "L0024",
+   "ts": "2026-11-12T13:50:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=33",
+   "format": "text"
+  },
+  {
+   "id": "L0025",
+   "ts": "2026-11-12T13:50:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58021 gift=true subtotal=60.00 coupons=none total=60.00",
+   "format": "text"
+  },
+  {
+   "id": "L0026",
+   "ts": "2026-11-12T13:51:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58022 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "text"
+  },
+  {
+   "id": "L0027",
+   "ts": "2026-11-12T13:52:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58023 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "text"
+  },
+  {
+   "id": "L0028",
+   "ts": "2026-11-12T13:53:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58024 gift=false subtotal=100.00 coupons=percent:10 total=90.00",
+   "format": "text"
+  },
+  {
+   "id": "L0029",
+   "ts": "2026-11-12T13:54:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58025 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "text"
+  },
+  {
+   "id": "L0030",
+   "ts": "2026-11-12T13:55:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58026 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "text"
+  },
+  {
+   "id": "L0031",
+   "ts": "2026-11-12T13:56:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58027 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "text"
+  },
+  {
+   "id": "L0032",
+   "ts": "2026-11-12T13:57:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58028 gift=true subtotal=60.00 coupons=percent:10 total=54.00",
+   "format": "text"
+  },
+  {
+   "id": "L0033",
+   "ts": "2026-11-12T13:58:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58029 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "text"
+  },
+  {
+   "id": "L0034",
+   "ts": "2026-11-12T13:58:30Z",
+   "level": "WARN",
+   "logger": "checkout.payments",
+   "message": "PayFast charge timeout after 8s; retry 1 succeeded",
+   "format": "text"
+  },
+  {
+   "id": "L0035",
+   "ts": "2026-11-12T13:59:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58030 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "text"
+  },
+  {
+   "id": "L0036",
+   "ts": "2026-11-12T14:00:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=31",
+   "format": "text"
+  },
+  {
+   "id": "L0037",
+   "ts": "2026-11-12T14:00:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58031 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "text"
+  },
+  {
+   "id": "L0038",
+   "ts": "2026-11-12T14:01:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58032 gift=false subtotal=80.00 coupons=percent:10 total=72.00",
+   "format": "text"
+  },
+  {
+   "id": "L0039",
+   "ts": "2026-11-12T14:02:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58033 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "text"
+  },
+  {
+   "id": "L0040",
+   "ts": "2026-11-12T14:03:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58034 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "text"
+  },
+  {
+   "id": "L0041",
+   "ts": "2026-11-12T14:04:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58035 gift=true subtotal=60.00 coupons=none total=60.00",
+   "format": "text"
+  },
+  {
+   "id": "L0042",
+   "ts": "2026-11-12T14:05:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58036 gift=false subtotal=60.00 coupons=percent:10 total=54.00",
+   "format": "text"
+  },
+  {
+   "id": "L0043",
+   "ts": "2026-11-12T14:06:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58037 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "text"
+  },
+  {
+   "id": "L0044",
+   "ts": "2026-11-12T14:07:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58038 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "text"
+  },
+  {
+   "id": "L0045",
+   "ts": "2026-11-12T14:08:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58039 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "text"
+  },
+  {
+   "id": "L0046",
+   "ts": "2026-11-12T14:09:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58040 gift=false subtotal=60.00 coupons=percent:10 total=54.00",
+   "format": "text"
+  },
+  {
+   "id": "L0047",
+   "ts": "2026-11-12T14:10:00Z",
+   "level": "INFO",
+   "logger": "deploy",
+   "message": "deployed checkout v1.4.2 (a41c9e2, 7d03b5f, c92e1aa)",
+   "format": "json"
+  },
+  {
+   "id": "L0048",
+   "ts": "2026-11-12T14:10:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=24",
+   "format": "json"
+  },
+  {
+   "id": "L0049",
+   "ts": "2026-11-12T14:10:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58041 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  },
+  {
+   "id": "L0050",
+   "ts": "2026-11-12T14:11:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58042 gift=true subtotal=100.00 coupons=none total=100.00",
+   "format": "json"
+  },
+  {
+   "id": "L0051",
+   "ts": "2026-11-12T14:12:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58043 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  },
+  {
+   "id": "L0052",
+   "ts": "2026-11-12T14:13:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58044 gift=false subtotal=80.00 coupons=percent:10 total=64.00",
+   "format": "json"
+  },
+  {
+   "id": "L0053",
+   "ts": "2026-11-12T14:14:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58045 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0054",
+   "ts": "2026-11-12T14:15:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58046 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  },
+  {
+   "id": "L0055",
+   "ts": "2026-11-12T14:16:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58047 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0056",
+   "ts": "2026-11-12T14:17:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58048 gift=false subtotal=80.00 coupons=percent:10 total=64.00",
+   "format": "json"
+  },
+  {
+   "id": "L0057",
+   "ts": "2026-11-12T14:18:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58049 gift=true subtotal=80.00 coupons=none total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0058",
+   "ts": "2026-11-12T14:19:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58050 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "json"
+  },
+  {
+   "id": "L0059",
+   "ts": "2026-11-12T14:20:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=24",
+   "format": "json"
+  },
+  {
+   "id": "L0060",
+   "ts": "2026-11-12T14:20:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58051 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  },
+  {
+   "id": "L0061",
+   "ts": "2026-11-12T14:21:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58052 gift=false subtotal=80.00 coupons=percent:10 total=64.00",
+   "format": "json"
+  },
+  {
+   "id": "L0062",
+   "ts": "2026-11-12T14:22:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58053 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "json"
+  },
+  {
+   "id": "L0063",
+   "ts": "2026-11-12T14:23:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58054 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "json"
+  },
+  {
+   "id": "L0064",
+   "ts": "2026-11-12T14:24:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58055 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  },
+  {
+   "id": "L0065",
+   "ts": "2026-11-12T14:25:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58056 gift=true subtotal=100.00 coupons=percent:10 total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0066",
+   "ts": "2026-11-12T14:26:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58057 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "json"
+  },
+  {
+   "id": "L0067",
+   "ts": "2026-11-12T14:27:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58058 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "json"
+  },
+  {
+   "id": "L0068",
+   "ts": "2026-11-12T14:28:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58059 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "json"
+  },
+  {
+   "id": "L0069",
+   "ts": "2026-11-12T14:29:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58060 gift=false subtotal=80.00 coupons=percent:10 total=64.00",
+   "format": "json"
+  },
+  {
+   "id": "L0070",
+   "ts": "2026-11-12T14:30:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=39",
+   "format": "json"
+  },
+  {
+   "id": "L0071",
+   "ts": "2026-11-12T14:30:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58061 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0072",
+   "ts": "2026-11-12T14:31:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58062 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "json"
+  },
+  {
+   "id": "L0073",
+   "ts": "2026-11-12T14:32:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58063 gift=true subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  },
+  {
+   "id": "L0074",
+   "ts": "2026-11-12T14:33:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58064 gift=false subtotal=60.00 coupons=percent:10 total=48.00",
+   "format": "json"
+  },
+  {
+   "id": "L0075",
+   "ts": "2026-11-12T14:34:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58065 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "json"
+  },
+  {
+   "id": "L0076",
+   "ts": "2026-11-12T14:35:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58066 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0077",
+   "ts": "2026-11-12T14:36:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58067 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0078",
+   "ts": "2026-11-12T14:37:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58068 gift=false subtotal=40.00 coupons=percent:10 total=32.00",
+   "format": "json"
+  },
+  {
+   "id": "L0079",
+   "ts": "2026-11-12T14:38:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58069 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  },
+  {
+   "id": "L0080",
+   "ts": "2026-11-12T14:39:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58070 gift=true subtotal=120.00 coupons=none total=120.00",
+   "format": "json"
+  },
+  {
+   "id": "L0081",
+   "ts": "2026-11-12T14:40:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=30",
+   "format": "json"
+  },
+  {
+   "id": "L0082",
+   "ts": "2026-11-12T14:40:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58071 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0083",
+   "ts": "2026-11-12T14:41:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58072 gift=false subtotal=40.00 coupons=percent:10 total=32.00",
+   "format": "json"
+  },
+  {
+   "id": "L0084",
+   "ts": "2026-11-12T14:41:30Z",
+   "level": "WARN",
+   "logger": "checkout.payments",
+   "message": "PayFast charge timeout after 8s; retry 1 succeeded",
+   "format": "json"
+  },
+  {
+   "id": "L0085",
+   "ts": "2026-11-12T14:42:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58073 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "json"
+  },
+  {
+   "id": "L0086",
+   "ts": "2026-11-12T14:43:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58074 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "json"
+  },
+  {
+   "id": "L0087",
+   "ts": "2026-11-12T14:44:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58075 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "json"
+  },
+  {
+   "id": "L0088",
+   "ts": "2026-11-12T14:45:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58076 gift=false subtotal=120.00 coupons=percent:10 total=96.00",
+   "format": "json"
+  },
+  {
+   "id": "L0089",
+   "ts": "2026-11-12T14:46:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58077 gift=true subtotal=80.00 coupons=none total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0090",
+   "ts": "2026-11-12T14:47:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58078 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "json"
+  },
+  {
+   "id": "L0091",
+   "ts": "2026-11-12T14:48:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58079 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0092",
+   "ts": "2026-11-12T14:49:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58080 gift=false subtotal=60.00 coupons=percent:10 total=48.00",
+   "format": "json"
+  },
+  {
+   "id": "L0093",
+   "ts": "2026-11-12T14:50:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=19",
+   "format": "json"
+  },
+  {
+   "id": "L0094",
+   "ts": "2026-11-12T14:50:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58081 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0095",
+   "ts": "2026-11-12T14:51:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58082 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "json"
+  },
+  {
+   "id": "L0096",
+   "ts": "2026-11-12T14:52:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58083 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "json"
+  },
+  {
+   "id": "L0097",
+   "ts": "2026-11-12T14:53:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58084 gift=true subtotal=80.00 coupons=percent:10 total=64.00",
+   "format": "json"
+  },
+  {
+   "id": "L0098",
+   "ts": "2026-11-12T14:54:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58085 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  },
+  {
+   "id": "L0099",
+   "ts": "2026-11-12T14:55:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58086 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "json"
+  },
+  {
+   "id": "L0100",
+   "ts": "2026-11-12T14:56:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58087 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  },
+  {
+   "id": "L0101",
+   "ts": "2026-11-12T14:57:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58088 gift=false subtotal=120.00 coupons=percent:10 total=96.00",
+   "format": "json"
+  },
+  {
+   "id": "L0102",
+   "ts": "2026-11-12T14:58:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58089 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "json"
+  },
+  {
+   "id": "L0103",
+   "ts": "2026-11-12T14:59:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58090 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  }
+ ],
+ "metrics": {
+  "error_rate_pct": [
+   {
+    "ts": "2026-11-12T13:30:00Z",
+    "value": 0.188
+   },
+   {
+    "ts": "2026-11-12T13:31:00Z",
+    "value": 0.275
+   },
+   {
+    "ts": "2026-11-12T13:32:00Z",
+    "value": 0.134
+   },
+   {
+    "ts": "2026-11-12T13:33:00Z",
+    "value": 0.245
+   },
+   {
+    "ts": "2026-11-12T13:34:00Z",
+    "value": 0.189
+   },
+   {
+    "ts": "2026-11-12T13:35:00Z",
+    "value": 0.249
+   },
+   {
+    "ts": "2026-11-12T13:36:00Z",
+    "value": 0.127
+   },
+   {
+    "ts": "2026-11-12T13:37:00Z",
+    "value": 0.2
+   },
+   {
+    "ts": "2026-11-12T13:38:00Z",
+    "value": 0.138
+   },
+   {
+    "ts": "2026-11-12T13:39:00Z",
+    "value": 0.261
+   },
+   {
+    "ts": "2026-11-12T13:40:00Z",
+    "value": 0.227
+   },
+   {
+    "ts": "2026-11-12T13:41:00Z",
+    "value": 0.276
+   },
+   {
+    "ts": "2026-11-12T13:42:00Z",
+    "value": 0.261
+   },
+   {
+    "ts": "2026-11-12T13:43:00Z",
+    "value": 0.272
+   },
+   {
+    "ts": "2026-11-12T13:44:00Z",
+    "value": 0.117
+   },
+   {
+    "ts": "2026-11-12T13:45:00Z",
+    "value": 0.177
+   },
+   {
+    "ts": "2026-11-12T13:46:00Z",
+    "value": 0.173
+   },
+   {
+    "ts": "2026-11-12T13:47:00Z",
+    "value": 0.204
+   },
+   {
+    "ts": "2026-11-12T13:48:00Z",
+    "value": 0.235
+   },
+   {
+    "ts": "2026-11-12T13:49:00Z",
+    "value": 0.117
+   },
+   {
+    "ts": "2026-11-12T13:50:00Z",
+    "value": 0.182
+   },
+   {
+    "ts": "2026-11-12T13:51:00Z",
+    "value": 0.292
+   },
+   {
+    "ts": "2026-11-12T13:52:00Z",
+    "value": 0.286
+   },
+   {
+    "ts": "2026-11-12T13:53:00Z",
+    "value": 0.151
+   },
+   {
+    "ts": "2026-11-12T13:54:00Z",
+    "value": 0.185
+   },
+   {
+    "ts": "2026-11-12T13:55:00Z",
+    "value": 0.149
+   },
+   {
+    "ts": "2026-11-12T13:56:00Z",
+    "value": 0.23
+   },
+   {
+    "ts": "2026-11-12T13:57:00Z",
+    "value": 0.27
+   },
+   {
+    "ts": "2026-11-12T13:58:00Z",
+    "value": 0.293
+   },
+   {
+    "ts": "2026-11-12T13:59:00Z",
+    "value": 0.288
+   },
+   {
+    "ts": "2026-11-12T14:00:00Z",
+    "value": 0.135
+   },
+   {
+    "ts": "2026-11-12T14:01:00Z",
+    "value": 0.145
+   },
+   {
+    "ts": "2026-11-12T14:02:00Z",
+    "value": 0.194
+   },
+   {
+    "ts": "2026-11-12T14:03:00Z",
+    "value": 0.258
+   },
+   {
+    "ts": "2026-11-12T14:04:00Z",
+    "value": 0.117
+   },
+   {
+    "ts": "2026-11-12T14:05:00Z",
+    "value": 0.142
+   },
+   {
+    "ts": "2026-11-12T14:06:00Z",
+    "value": 0.108
+   },
+   {
+    "ts": "2026-11-12T14:07:00Z",
+    "value": 0.293
+   },
+   {
+    "ts": "2026-11-12T14:08:00Z",
+    "value": 0.112
+   },
+   {
+    "ts": "2026-11-12T14:09:00Z",
+    "value": 0.163
+   },
+   {
+    "ts": "2026-11-12T14:10:00Z",
+    "value": 0.226
+   },
+   {
+    "ts": "2026-11-12T14:11:00Z",
+    "value": 0.296
+   },
+   {
+    "ts": "2026-11-12T14:12:00Z",
+    "value": 0.219
+   },
+   {
+    "ts": "2026-11-12T14:13:00Z",
+    "value": 0.228
+   },
+   {
+    "ts": "2026-11-12T14:14:00Z",
+    "value": 0.28
+   },
+   {
+    "ts": "2026-11-12T14:15:00Z",
+    "value": 0.179
+   },
+   {
+    "ts": "2026-11-12T14:16:00Z",
+    "value": 0.271
+   },
+   {
+    "ts": "2026-11-12T14:17:00Z",
+    "value": 0.288
+   },
+   {
+    "ts": "2026-11-12T14:18:00Z",
+    "value": 0.162
+   },
+   {
+    "ts": "2026-11-12T14:19:00Z",
+    "value": 0.15
+   },
+   {
+    "ts": "2026-11-12T14:20:00Z",
+    "value": 0.12
+   },
+   {
+    "ts": "2026-11-12T14:21:00Z",
+    "value": 0.21
+   },
+   {
+    "ts": "2026-11-12T14:22:00Z",
+    "value": 0.247
+   },
+   {
+    "ts": "2026-11-12T14:23:00Z",
+    "value": 0.212
+   },
+   {
+    "ts": "2026-11-12T14:24:00Z",
+    "value": 0.199
+   },
+   {
+    "ts": "2026-11-12T14:25:00Z",
+    "value": 0.208
+   },
+   {
+    "ts": "2026-11-12T14:26:00Z",
+    "value": 0.124
+   },
+   {
+    "ts": "2026-11-12T14:27:00Z",
+    "value": 0.264
+   },
+   {
+    "ts": "2026-11-12T14:28:00Z",
+    "value": 0.149
+   },
+   {
+    "ts": "2026-11-12T14:29:00Z",
+    "value": 0.284
+   },
+   {
+    "ts": "2026-11-12T14:30:00Z",
+    "value": 0.232
+   },
+   {
+    "ts": "2026-11-12T14:31:00Z",
+    "value": 0.21
+   },
+   {
+    "ts": "2026-11-12T14:32:00Z",
+    "value": 0.124
+   },
+   {
+    "ts": "2026-11-12T14:33:00Z",
+    "value": 0.223
+   },
+   {
+    "ts": "2026-11-12T14:34:00Z",
+    "value": 0.295
+   },
+   {
+    "ts": "2026-11-12T14:35:00Z",
+    "value": 0.156
+   },
+   {
+    "ts": "2026-11-12T14:36:00Z",
+    "value": 0.144
+   },
+   {
+    "ts": "2026-11-12T14:37:00Z",
+    "value": 0.221
+   },
+   {
+    "ts": "2026-11-12T14:38:00Z",
+    "value": 0.224
+   },
+   {
+    "ts": "2026-11-12T14:39:00Z",
+    "value": 0.13
+   },
+   {
+    "ts": "2026-11-12T14:40:00Z",
+    "value": 0.293
+   },
+   {
+    "ts": "2026-11-12T14:41:00Z",
+    "value": 0.251
+   },
+   {
+    "ts": "2026-11-12T14:42:00Z",
+    "value": 0.14
+   },
+   {
+    "ts": "2026-11-12T14:43:00Z",
+    "value": 0.195
+   },
+   {
+    "ts": "2026-11-12T14:44:00Z",
+    "value": 0.168
+   },
+   {
+    "ts": "2026-11-12T14:45:00Z",
+    "value": 0.148
+   },
+   {
+    "ts": "2026-11-12T14:46:00Z",
+    "value": 0.225
+   },
+   {
+    "ts": "2026-11-12T14:47:00Z",
+    "value": 0.143
+   },
+   {
+    "ts": "2026-11-12T14:48:00Z",
+    "value": 0.117
+   },
+   {
+    "ts": "2026-11-12T14:49:00Z",
+    "value": 0.174
+   },
+   {
+    "ts": "2026-11-12T14:50:00Z",
+    "value": 0.151
+   },
+   {
+    "ts": "2026-11-12T14:51:00Z",
+    "value": 0.281
+   },
+   {
+    "ts": "2026-11-12T14:52:00Z",
+    "value": 0.263
+   },
+   {
+    "ts": "2026-11-12T14:53:00Z",
+    "value": 0.16
+   },
+   {
+    "ts": "2026-11-12T14:54:00Z",
+    "value": 0.132
+   },
+   {
+    "ts": "2026-11-12T14:55:00Z",
+    "value": 0.286
+   },
+   {
+    "ts": "2026-11-12T14:56:00Z",
+    "value": 0.104
+   },
+   {
+    "ts": "2026-11-12T14:57:00Z",
+    "value": 0.109
+   },
+   {
+    "ts": "2026-11-12T14:58:00Z",
+    "value": 0.169
+   },
+   {
+    "ts": "2026-11-12T14:59:00Z",
+    "value": 0.277
+   }
+  ],
+  "orders_per_min": [
+   {
+    "ts": "2026-11-12T13:30:00Z",
+    "value": 19.512
+   },
+   {
+    "ts": "2026-11-12T13:31:00Z",
+    "value": 18.919
+   },
+   {
+    "ts": "2026-11-12T13:32:00Z",
+    "value": 21.293
+   },
+   {
+    "ts": "2026-11-12T13:33:00Z",
+    "value": 20.689
+   },
+   {
+    "ts": "2026-11-12T13:34:00Z",
+    "value": 21.032
+   },
+   {
+    "ts": "2026-11-12T13:35:00Z",
+    "value": 18.543
+   },
+   {
+    "ts": "2026-11-12T13:36:00Z",
+    "value": 18.616
+   },
+   {
+    "ts": "2026-11-12T13:37:00Z",
+    "value": 21.091
+   },
+   {
+    "ts": "2026-11-12T13:38:00Z",
+    "value": 20.585
+   },
+   {
+    "ts": "2026-11-12T13:39:00Z",
+    "value": 19.46
+   },
+   {
+    "ts": "2026-11-12T13:40:00Z",
+    "value": 20.253
+   },
+   {
+    "ts": "2026-11-12T13:41:00Z",
+    "value": 19.659
+   },
+   {
+    "ts": "2026-11-12T13:42:00Z",
+    "value": 20.477
+   },
+   {
+    "ts": "2026-11-12T13:43:00Z",
+    "value": 19.852
+   },
+   {
+    "ts": "2026-11-12T13:44:00Z",
+    "value": 21.369
+   },
+   {
+    "ts": "2026-11-12T13:45:00Z",
+    "value": 21.194
+   },
+   {
+    "ts": "2026-11-12T13:46:00Z",
+    "value": 21.326
+   },
+   {
+    "ts": "2026-11-12T13:47:00Z",
+    "value": 19.293
+   },
+   {
+    "ts": "2026-11-12T13:48:00Z",
+    "value": 19.779
+   },
+   {
+    "ts": "2026-11-12T13:49:00Z",
+    "value": 19.019
+   },
+   {
+    "ts": "2026-11-12T13:50:00Z",
+    "value": 19.064
+   },
+   {
+    "ts": "2026-11-12T13:51:00Z",
+    "value": 20.906
+   },
+   {
+    "ts": "2026-11-12T13:52:00Z",
+    "value": 20.513
+   },
+   {
+    "ts": "2026-11-12T13:53:00Z",
+    "value": 19.14
+   },
+   {
+    "ts": "2026-11-12T13:54:00Z",
+    "value": 20.488
+   },
+   {
+    "ts": "2026-11-12T13:55:00Z",
+    "value": 21.104
+   },
+   {
+    "ts": "2026-11-12T13:56:00Z",
+    "value": 19.855
+   },
+   {
+    "ts": "2026-11-12T13:57:00Z",
+    "value": 20.391
+   },
+   {
+    "ts": "2026-11-12T13:58:00Z",
+    "value": 19.212
+   },
+   {
+    "ts": "2026-11-12T13:59:00Z",
+    "value": 19.104
+   },
+   {
+    "ts": "2026-11-12T14:00:00Z",
+    "value": 18.565
+   },
+   {
+    "ts": "2026-11-12T14:01:00Z",
+    "value": 20.055
+   },
+   {
+    "ts": "2026-11-12T14:02:00Z",
+    "value": 19.853
+   },
+   {
+    "ts": "2026-11-12T14:03:00Z",
+    "value": 19.147
+   },
+   {
+    "ts": "2026-11-12T14:04:00Z",
+    "value": 19.118
+   },
+   {
+    "ts": "2026-11-12T14:05:00Z",
+    "value": 18.556
+   },
+   {
+    "ts": "2026-11-12T14:06:00Z",
+    "value": 19.51
+   },
+   {
+    "ts": "2026-11-12T14:07:00Z",
+    "value": 19.147
+   },
+   {
+    "ts": "2026-11-12T14:08:00Z",
+    "value": 18.692
+   },
+   {
+    "ts": "2026-11-12T14:09:00Z",
+    "value": 20.51
+   },
+   {
+    "ts": "2026-11-12T14:10:00Z",
+    "value": 21.186
+   },
+   {
+    "ts": "2026-11-12T14:11:00Z",
+    "value": 19.207
+   },
+   {
+    "ts": "2026-11-12T14:12:00Z",
+    "value": 19.429
+   },
+   {
+    "ts": "2026-11-12T14:13:00Z",
+    "value": 19.596
+   },
+   {
+    "ts": "2026-11-12T14:14:00Z",
+    "value": 19.367
+   },
+   {
+    "ts": "2026-11-12T14:15:00Z",
+    "value": 20.883
+   },
+   {
+    "ts": "2026-11-12T14:16:00Z",
+    "value": 20.278
+   },
+   {
+    "ts": "2026-11-12T14:17:00Z",
+    "value": 20.832
+   },
+   {
+    "ts": "2026-11-12T14:18:00Z",
+    "value": 19.591
+   },
+   {
+    "ts": "2026-11-12T14:19:00Z",
+    "value": 20.986
+   },
+   {
+    "ts": "2026-11-12T14:20:00Z",
+    "value": 19.647
+   },
+   {
+    "ts": "2026-11-12T14:21:00Z",
+    "value": 19.317
+   },
+   {
+    "ts": "2026-11-12T14:22:00Z",
+    "value": 20.103
+   },
+   {
+    "ts": "2026-11-12T14:23:00Z",
+    "value": 18.734
+   },
+   {
+    "ts": "2026-11-12T14:24:00Z",
+    "value": 18.763
+   },
+   {
+    "ts": "2026-11-12T14:25:00Z",
+    "value": 19.165
+   },
+   {
+    "ts": "2026-11-12T14:26:00Z",
+    "value": 20.9
+   },
+   {
+    "ts": "2026-11-12T14:27:00Z",
+    "value": 20.616
+   },
+   {
+    "ts": "2026-11-12T14:28:00Z",
+    "value": 21.081
+   },
+   {
+    "ts": "2026-11-12T14:29:00Z",
+    "value": 21.405
+   },
+   {
+    "ts": "2026-11-12T14:30:00Z",
+    "value": 21.035
+   },
+   {
+    "ts": "2026-11-12T14:31:00Z",
+    "value": 20.587
+   },
+   {
+    "ts": "2026-11-12T14:32:00Z",
+    "value": 20.607
+   },
+   {
+    "ts": "2026-11-12T14:33:00Z",
+    "value": 20.739
+   },
+   {
+    "ts": "2026-11-12T14:34:00Z",
+    "value": 19.76
+   },
+   {
+    "ts": "2026-11-12T14:35:00Z",
+    "value": 19.277
+   },
+   {
+    "ts": "2026-11-12T14:36:00Z",
+    "value": 19.226
+   },
+   {
+    "ts": "2026-11-12T14:37:00Z",
+    "value": 21.303
+   },
+   {
+    "ts": "2026-11-12T14:38:00Z",
+    "value": 21.417
+   },
+   {
+    "ts": "2026-11-12T14:39:00Z",
+    "value": 21.435
+   },
+   {
+    "ts": "2026-11-12T14:40:00Z",
+    "value": 18.775
+   },
+   {
+    "ts": "2026-11-12T14:41:00Z",
+    "value": 18.726
+   },
+   {
+    "ts": "2026-11-12T14:42:00Z",
+    "value": 18.656
+   },
+   {
+    "ts": "2026-11-12T14:43:00Z",
+    "value": 20.76
+   },
+   {
+    "ts": "2026-11-12T14:44:00Z",
+    "value": 19.447
+   },
+   {
+    "ts": "2026-11-12T14:45:00Z",
+    "value": 19.531
+   },
+   {
+    "ts": "2026-11-12T14:46:00Z",
+    "value": 19.363
+   },
+   {
+    "ts": "2026-11-12T14:47:00Z",
+    "value": 21.187
+   },
+   {
+    "ts": "2026-11-12T14:48:00Z",
+    "value": 20.87
+   },
+   {
+    "ts": "2026-11-12T14:49:00Z",
+    "value": 20.686
+   },
+   {
+    "ts": "2026-11-12T14:50:00Z",
+    "value": 21.183
+   },
+   {
+    "ts": "2026-11-12T14:51:00Z",
+    "value": 20.64
+   },
+   {
+    "ts": "2026-11-12T14:52:00Z",
+    "value": 19.211
+   },
+   {
+    "ts": "2026-11-12T14:53:00Z",
+    "value": 19.098
+   },
+   {
+    "ts": "2026-11-12T14:54:00Z",
+    "value": 20.137
+   },
+   {
+    "ts": "2026-11-12T14:55:00Z",
+    "value": 20.948
+   },
+   {
+    "ts": "2026-11-12T14:56:00Z",
+    "value": 19.098
+   },
+   {
+    "ts": "2026-11-12T14:57:00Z",
+    "value": 19.529
+   },
+   {
+    "ts": "2026-11-12T14:58:00Z",
+    "value": 18.965
+   },
+   {
+    "ts": "2026-11-12T14:59:00Z",
+    "value": 19.585
+   }
+  ],
+  "avg_order_value_usd": [
+   {
+    "ts": "2026-11-12T13:30:00Z",
+    "value": 74.751
+   },
+   {
+    "ts": "2026-11-12T13:31:00Z",
+    "value": 73.928
+   },
+   {
+    "ts": "2026-11-12T13:32:00Z",
+    "value": 74.009
+   },
+   {
+    "ts": "2026-11-12T13:33:00Z",
+    "value": 73.029
+   },
+   {
+    "ts": "2026-11-12T13:34:00Z",
+    "value": 73.285
+   },
+   {
+    "ts": "2026-11-12T13:35:00Z",
+    "value": 74.994
+   },
+   {
+    "ts": "2026-11-12T13:36:00Z",
+    "value": 73.471
+   },
+   {
+    "ts": "2026-11-12T13:37:00Z",
+    "value": 73.869
+   },
+   {
+    "ts": "2026-11-12T13:38:00Z",
+    "value": 73.988
+   },
+   {
+    "ts": "2026-11-12T13:39:00Z",
+    "value": 74.209
+   },
+   {
+    "ts": "2026-11-12T13:40:00Z",
+    "value": 73.511
+   },
+   {
+    "ts": "2026-11-12T13:41:00Z",
+    "value": 73.731
+   },
+   {
+    "ts": "2026-11-12T13:42:00Z",
+    "value": 74.349
+   },
+   {
+    "ts": "2026-11-12T13:43:00Z",
+    "value": 73.532
+   },
+   {
+    "ts": "2026-11-12T13:44:00Z",
+    "value": 73.061
+   },
+   {
+    "ts": "2026-11-12T13:45:00Z",
+    "value": 74.896
+   },
+   {
+    "ts": "2026-11-12T13:46:00Z",
+    "value": 74.786
+   },
+   {
+    "ts": "2026-11-12T13:47:00Z",
+    "value": 74.154
+   },
+   {
+    "ts": "2026-11-12T13:48:00Z",
+    "value": 73.708
+   },
+   {
+    "ts": "2026-11-12T13:49:00Z",
+    "value": 74.675
+   },
+   {
+    "ts": "2026-11-12T13:50:00Z",
+    "value": 73.885
+   },
+   {
+    "ts": "2026-11-12T13:51:00Z",
+    "value": 74.918
+   },
+   {
+    "ts": "2026-11-12T13:52:00Z",
+    "value": 74.985
+   },
+   {
+    "ts": "2026-11-12T13:53:00Z",
+    "value": 74.823
+   },
+   {
+    "ts": "2026-11-12T13:54:00Z",
+    "value": 73.858
+   },
+   {
+    "ts": "2026-11-12T13:55:00Z",
+    "value": 73.953
+   },
+   {
+    "ts": "2026-11-12T13:56:00Z",
+    "value": 73.309
+   },
+   {
+    "ts": "2026-11-12T13:57:00Z",
+    "value": 73.48
+   },
+   {
+    "ts": "2026-11-12T13:58:00Z",
+    "value": 74.985
+   },
+   {
+    "ts": "2026-11-12T13:59:00Z",
+    "value": 73.776
+   },
+   {
+    "ts": "2026-11-12T14:00:00Z",
+    "value": 73.549
+   },
+   {
+    "ts": "2026-11-12T14:01:00Z",
+    "value": 74.052
+   },
+   {
+    "ts": "2026-11-12T14:02:00Z",
+    "value": 74.65
+   },
+   {
+    "ts": "2026-11-12T14:03:00Z",
+    "value": 74.656
+   },
+   {
+    "ts": "2026-11-12T14:04:00Z",
+    "value": 73.701
+   },
+   {
+    "ts": "2026-11-12T14:05:00Z",
+    "value": 74.846
+   },
+   {
+    "ts": "2026-11-12T14:06:00Z",
+    "value": 74.202
+   },
+   {
+    "ts": "2026-11-12T14:07:00Z",
+    "value": 73.555
+   },
+   {
+    "ts": "2026-11-12T14:08:00Z",
+    "value": 74.331
+   },
+   {
+    "ts": "2026-11-12T14:09:00Z",
+    "value": 74.912
+   },
+   {
+    "ts": "2026-11-12T14:10:00Z",
+    "value": 71.193
+   },
+   {
+    "ts": "2026-11-12T14:11:00Z",
+    "value": 70.829
+   },
+   {
+    "ts": "2026-11-12T14:12:00Z",
+    "value": 71.542
+   },
+   {
+    "ts": "2026-11-12T14:13:00Z",
+    "value": 71.919
+   },
+   {
+    "ts": "2026-11-12T14:14:00Z",
+    "value": 70.626
+   },
+   {
+    "ts": "2026-11-12T14:15:00Z",
+    "value": 72.286
+   },
+   {
+    "ts": "2026-11-12T14:16:00Z",
+    "value": 72.224
+   },
+   {
+    "ts": "2026-11-12T14:17:00Z",
+    "value": 70.55
+   },
+   {
+    "ts": "2026-11-12T14:18:00Z",
+    "value": 70.656
+   },
+   {
+    "ts": "2026-11-12T14:19:00Z",
+    "value": 71.593
+   },
+   {
+    "ts": "2026-11-12T14:20:00Z",
+    "value": 71.796
+   },
+   {
+    "ts": "2026-11-12T14:21:00Z",
+    "value": 72.403
+   },
+   {
+    "ts": "2026-11-12T14:22:00Z",
+    "value": 72.476
+   },
+   {
+    "ts": "2026-11-12T14:23:00Z",
+    "value": 72.283
+   },
+   {
+    "ts": "2026-11-12T14:24:00Z",
+    "value": 71.53
+   },
+   {
+    "ts": "2026-11-12T14:25:00Z",
+    "value": 72.492
+   },
+   {
+    "ts": "2026-11-12T14:26:00Z",
+    "value": 70.632
+   },
+   {
+    "ts": "2026-11-12T14:27:00Z",
+    "value": 72.246
+   },
+   {
+    "ts": "2026-11-12T14:28:00Z",
+    "value": 71.106
+   },
+   {
+    "ts": "2026-11-12T14:29:00Z",
+    "value": 70.534
+   },
+   {
+    "ts": "2026-11-12T14:30:00Z",
+    "value": 72.117
+   },
+   {
+    "ts": "2026-11-12T14:31:00Z",
+    "value": 71.324
+   },
+   {
+    "ts": "2026-11-12T14:32:00Z",
+    "value": 71.271
+   },
+   {
+    "ts": "2026-11-12T14:33:00Z",
+    "value": 70.664
+   },
+   {
+    "ts": "2026-11-12T14:34:00Z",
+    "value": 71.688
+   },
+   {
+    "ts": "2026-11-12T14:35:00Z",
+    "value": 70.511
+   },
+   {
+    "ts": "2026-11-12T14:36:00Z",
+    "value": 71.165
+   },
+   {
+    "ts": "2026-11-12T14:37:00Z",
+    "value": 72.072
+   },
+   {
+    "ts": "2026-11-12T14:38:00Z",
+    "value": 70.604
+   },
+   {
+    "ts": "2026-11-12T14:39:00Z",
+    "value": 71.281
+   },
+   {
+    "ts": "2026-11-12T14:40:00Z",
+    "value": 71.607
+   },
+   {
+    "ts": "2026-11-12T14:41:00Z",
+    "value": 72.42
+   },
+   {
+    "ts": "2026-11-12T14:42:00Z",
+    "value": 72.34
+   },
+   {
+    "ts": "2026-11-12T14:43:00Z",
+    "value": 71.203
+   },
+   {
+    "ts": "2026-11-12T14:44:00Z",
+    "value": 71.12
+   },
+   {
+    "ts": "2026-11-12T14:45:00Z",
+    "value": 71.243
+   },
+   {
+    "ts": "2026-11-12T14:46:00Z",
+    "value": 70.547
+   },
+   {
+    "ts": "2026-11-12T14:47:00Z",
+    "value": 72.301
+   },
+   {
+    "ts": "2026-11-12T14:48:00Z",
+    "value": 71.609
+   },
+   {
+    "ts": "2026-11-12T14:49:00Z",
+    "value": 70.91
+   },
+   {
+    "ts": "2026-11-12T14:50:00Z",
+    "value": 71.215
+   },
+   {
+    "ts": "2026-11-12T14:51:00Z",
+    "value": 72.456
+   },
+   {
+    "ts": "2026-11-12T14:52:00Z",
+    "value": 72.482
+   },
+   {
+    "ts": "2026-11-12T14:53:00Z",
+    "value": 72.346
+   },
+   {
+    "ts": "2026-11-12T14:54:00Z",
+    "value": 71.301
+   },
+   {
+    "ts": "2026-11-12T14:55:00Z",
+    "value": 70.703
+   },
+   {
+    "ts": "2026-11-12T14:56:00Z",
+    "value": 71.864
+   },
+   {
+    "ts": "2026-11-12T14:57:00Z",
+    "value": 72.118
+   },
+   {
+    "ts": "2026-11-12T14:58:00Z",
+    "value": 72.369
+   },
+   {
+    "ts": "2026-11-12T14:59:00Z",
+    "value": 71.39
+   }
+  ],
+  "coupon_redemptions_per_min": [
+   {
+    "ts": "2026-11-12T13:30:00Z",
+    "value": 5.104
+   },
+   {
+    "ts": "2026-11-12T13:31:00Z",
+    "value": 4.878
+   },
+   {
+    "ts": "2026-11-12T13:32:00Z",
+    "value": 4.075
+   },
+   {
+    "ts": "2026-11-12T13:33:00Z",
+    "value": 5.095
+   },
+   {
+    "ts": "2026-11-12T13:34:00Z",
+    "value": 4.591
+   },
+   {
+    "ts": "2026-11-12T13:35:00Z",
+    "value": 4.494
+   },
+   {
+    "ts": "2026-11-12T13:36:00Z",
+    "value": 5.341
+   },
+   {
+    "ts": "2026-11-12T13:37:00Z",
+    "value": 4.715
+   },
+   {
+    "ts": "2026-11-12T13:38:00Z",
+    "value": 4.044
+   },
+   {
+    "ts": "2026-11-12T13:39:00Z",
+    "value": 4.067
+   },
+   {
+    "ts": "2026-11-12T13:40:00Z",
+    "value": 5.635
+   },
+   {
+    "ts": "2026-11-12T13:41:00Z",
+    "value": 5.249
+   },
+   {
+    "ts": "2026-11-12T13:42:00Z",
+    "value": 4.618
+   },
+   {
+    "ts": "2026-11-12T13:43:00Z",
+    "value": 4.599
+   },
+   {
+    "ts": "2026-11-12T13:44:00Z",
+    "value": 5.191
+   },
+   {
+    "ts": "2026-11-12T13:45:00Z",
+    "value": 4.862
+   },
+   {
+    "ts": "2026-11-12T13:46:00Z",
+    "value": 5.093
+   },
+   {
+    "ts": "2026-11-12T13:47:00Z",
+    "value": 5.028
+   },
+   {
+    "ts": "2026-11-12T13:48:00Z",
+    "value": 4.104
+   },
+   {
+    "ts": "2026-11-12T13:49:00Z",
+    "value": 4.235
+   },
+   {
+    "ts": "2026-11-12T13:50:00Z",
+    "value": 4.281
+   },
+   {
+    "ts": "2026-11-12T13:51:00Z",
+    "value": 5.869
+   },
+   {
+    "ts": "2026-11-12T13:52:00Z",
+    "value": 4.344
+   },
+   {
+    "ts": "2026-11-12T13:53:00Z",
+    "value": 4.768
+   },
+   {
+    "ts": "2026-11-12T13:54:00Z",
+    "value": 4.771
+   },
+   {
+    "ts": "2026-11-12T13:55:00Z",
+    "value": 5.165
+   },
+   {
+    "ts": "2026-11-12T13:56:00Z",
+    "value": 4.7
+   },
+   {
+    "ts": "2026-11-12T13:57:00Z",
+    "value": 5.692
+   },
+   {
+    "ts": "2026-11-12T13:58:00Z",
+    "value": 5.521
+   },
+   {
+    "ts": "2026-11-12T13:59:00Z",
+    "value": 5.456
+   },
+   {
+    "ts": "2026-11-12T14:00:00Z",
+    "value": 5.332
+   },
+   {
+    "ts": "2026-11-12T14:01:00Z",
+    "value": 5.468
+   },
+   {
+    "ts": "2026-11-12T14:02:00Z",
+    "value": 5.834
+   },
+   {
+    "ts": "2026-11-12T14:03:00Z",
+    "value": 4.687
+   },
+   {
+    "ts": "2026-11-12T14:04:00Z",
+    "value": 5.265
+   },
+   {
+    "ts": "2026-11-12T14:05:00Z",
+    "value": 4.867
+   },
+   {
+    "ts": "2026-11-12T14:06:00Z",
+    "value": 5.17
+   },
+   {
+    "ts": "2026-11-12T14:07:00Z",
+    "value": 5.264
+   },
+   {
+    "ts": "2026-11-12T14:08:00Z",
+    "value": 5.573
+   },
+   {
+    "ts": "2026-11-12T14:09:00Z",
+    "value": 4.584
+   },
+   {
+    "ts": "2026-11-12T14:10:00Z",
+    "value": 4.969
+   },
+   {
+    "ts": "2026-11-12T14:11:00Z",
+    "value": 4.098
+   },
+   {
+    "ts": "2026-11-12T14:12:00Z",
+    "value": 5.562
+   },
+   {
+    "ts": "2026-11-12T14:13:00Z",
+    "value": 5.892
+   },
+   {
+    "ts": "2026-11-12T14:14:00Z",
+    "value": 5.758
+   },
+   {
+    "ts": "2026-11-12T14:15:00Z",
+    "value": 4.43
+   },
+   {
+    "ts": "2026-11-12T14:16:00Z",
+    "value": 5.747
+   },
+   {
+    "ts": "2026-11-12T14:17:00Z",
+    "value": 5.975
+   },
+   {
+    "ts": "2026-11-12T14:18:00Z",
+    "value": 5.291
+   },
+   {
+    "ts": "2026-11-12T14:19:00Z",
+    "value": 5.528
+   },
+   {
+    "ts": "2026-11-12T14:20:00Z",
+    "value": 4.81
+   },
+   {
+    "ts": "2026-11-12T14:21:00Z",
+    "value": 4.338
+   },
+   {
+    "ts": "2026-11-12T14:22:00Z",
+    "value": 5.13
+   },
+   {
+    "ts": "2026-11-12T14:23:00Z",
+    "value": 4.459
+   },
+   {
+    "ts": "2026-11-12T14:24:00Z",
+    "value": 5.842
+   },
+   {
+    "ts": "2026-11-12T14:25:00Z",
+    "value": 4.337
+   },
+   {
+    "ts": "2026-11-12T14:26:00Z",
+    "value": 5.229
+   },
+   {
+    "ts": "2026-11-12T14:27:00Z",
+    "value": 4.948
+   },
+   {
+    "ts": "2026-11-12T14:28:00Z",
+    "value": 5.984
+   },
+   {
+    "ts": "2026-11-12T14:29:00Z",
+    "value": 4.268
+   },
+   {
+    "ts": "2026-11-12T14:30:00Z",
+    "value": 4.847
+   },
+   {
+    "ts": "2026-11-12T14:31:00Z",
+    "value": 4.784
+   },
+   {
+    "ts": "2026-11-12T14:32:00Z",
+    "value": 5.586
+   },
+   {
+    "ts": "2026-11-12T14:33:00Z",
+    "value": 5.596
+   },
+   {
+    "ts": "2026-11-12T14:34:00Z",
+    "value": 4.516
+   },
+   {
+    "ts": "2026-11-12T14:35:00Z",
+    "value": 4.948
+   },
+   {
+    "ts": "2026-11-12T14:36:00Z",
+    "value": 5.102
+   },
+   {
+    "ts": "2026-11-12T14:37:00Z",
+    "value": 4.943
+   },
+   {
+    "ts": "2026-11-12T14:38:00Z",
+    "value": 4.044
+   },
+   {
+    "ts": "2026-11-12T14:39:00Z",
+    "value": 5.163
+   },
+   {
+    "ts": "2026-11-12T14:40:00Z",
+    "value": 4.797
+   },
+   {
+    "ts": "2026-11-12T14:41:00Z",
+    "value": 5.771
+   },
+   {
+    "ts": "2026-11-12T14:42:00Z",
+    "value": 4.185
+   },
+   {
+    "ts": "2026-11-12T14:43:00Z",
+    "value": 5.498
+   },
+   {
+    "ts": "2026-11-12T14:44:00Z",
+    "value": 5.661
+   },
+   {
+    "ts": "2026-11-12T14:45:00Z",
+    "value": 5.384
+   },
+   {
+    "ts": "2026-11-12T14:46:00Z",
+    "value": 5.338
+   },
+   {
+    "ts": "2026-11-12T14:47:00Z",
+    "value": 5.196
+   },
+   {
+    "ts": "2026-11-12T14:48:00Z",
+    "value": 5.08
+   },
+   {
+    "ts": "2026-11-12T14:49:00Z",
+    "value": 5.237
+   },
+   {
+    "ts": "2026-11-12T14:50:00Z",
+    "value": 4.871
+   },
+   {
+    "ts": "2026-11-12T14:51:00Z",
+    "value": 5.13
+   },
+   {
+    "ts": "2026-11-12T14:52:00Z",
+    "value": 4.046
+   },
+   {
+    "ts": "2026-11-12T14:53:00Z",
+    "value": 5.495
+   },
+   {
+    "ts": "2026-11-12T14:54:00Z",
+    "value": 5.506
+   },
+   {
+    "ts": "2026-11-12T14:55:00Z",
+    "value": 4.894
+   },
+   {
+    "ts": "2026-11-12T14:56:00Z",
+    "value": 4.373
+   },
+   {
+    "ts": "2026-11-12T14:57:00Z",
+    "value": 5.384
+   },
+   {
+    "ts": "2026-11-12T14:58:00Z",
+    "value": 4.227
+   },
+   {
+    "ts": "2026-11-12T14:59:00Z",
+    "value": 4.971
+   }
+  ]
+ },
+ "notes": [
+  {
+   "id": "N1",
+   "source": "support",
+   "ts": "2026-11-12T14:37:00Z",
+   "text": "Customer says their 10% welcome coupon took 20% off. Happy customer, but flagging it."
+  },
+  {
+   "id": "N2",
+   "source": "support",
+   "ts": "2026-11-12T14:52:00Z",
+   "text": "Another order shows double the coupon discount on the receipt."
+  }
+ ]
+}

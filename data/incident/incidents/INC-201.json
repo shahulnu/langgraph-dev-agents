@@ -1,0 +1,2291 @@
+{
+ "id": "INC-201",
+ "title": "Checkout 500 errors after the afternoon deploy",
+ "teaser": "Errors jump right after the deploy; one code path missed a rename",
+ "opened": "2026-11-12T14:24:00Z",
+ "description": "Alert: checkout error rate above 5% for 10 minutes. Some customers can't place orders. The v1.4.2 deploy went out at 14:10 UTC.",
+ "logs": [
+  {
+   "id": "L0001",
+   "ts": "2026-11-12T13:30:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=20",
+   "format": "text"
+  },
+  {
+   "id": "L0002",
+   "ts": "2026-11-12T13:30:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58001 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "text"
+  },
+  {
+   "id": "L0003",
+   "ts": "2026-11-12T13:31:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58002 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "text"
+  },
+  {
+   "id": "L0004",
+   "ts": "2026-11-12T13:32:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58003 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "text"
+  },
+  {
+   "id": "L0005",
+   "ts": "2026-11-12T13:33:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58004 gift=false subtotal=100.00 coupons=percent:10 total=90.00",
+   "format": "text"
+  },
+  {
+   "id": "L0006",
+   "ts": "2026-11-12T13:34:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58005 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "text"
+  },
+  {
+   "id": "L0007",
+   "ts": "2026-11-12T13:35:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58006 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "text"
+  },
+  {
+   "id": "L0008",
+   "ts": "2026-11-12T13:36:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58007 gift=true subtotal=120.00 coupons=none total=120.00",
+   "format": "text"
+  },
+  {
+   "id": "L0009",
+   "ts": "2026-11-12T13:37:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58008 gift=false subtotal=100.00 coupons=percent:10 total=90.00",
+   "format": "text"
+  },
+  {
+   "id": "L0010",
+   "ts": "2026-11-12T13:37:30Z",
+   "level": "WARN",
+   "logger": "checkout.payments",
+   "message": "PayFast charge timeout after 8s; retry 1 succeeded",
+   "format": "text"
+  },
+  {
+   "id": "L0011",
+   "ts": "2026-11-12T13:38:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58009 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "text"
+  },
+  {
+   "id": "L0012",
+   "ts": "2026-11-12T13:39:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58010 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "text"
+  },
+  {
+   "id": "L0013",
+   "ts": "2026-11-12T13:40:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=40",
+   "format": "text"
+  },
+  {
+   "id": "L0014",
+   "ts": "2026-11-12T13:40:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58011 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "text"
+  },
+  {
+   "id": "L0015",
+   "ts": "2026-11-12T13:41:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58012 gift=false subtotal=40.00 coupons=percent:10 total=36.00",
+   "format": "text"
+  },
+  {
+   "id": "L0016",
+   "ts": "2026-11-12T13:42:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58013 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "text"
+  },
+  {
+   "id": "L0017",
+   "ts": "2026-11-12T13:43:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58014 gift=true subtotal=60.00 coupons=none total=60.00",
+   "format": "text"
+  },
+  {
+   "id": "L0018",
+   "ts": "2026-11-12T13:44:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58015 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "text"
+  },
+  {
+   "id": "L0019",
+   "ts": "2026-11-12T13:45:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58016 gift=false subtotal=60.00 coupons=percent:10 total=54.00",
+   "format": "text"
+  },
+  {
+   "id": "L0020",
+   "ts": "2026-11-12T13:46:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58017 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "text"
+  },
+  {
+   "id": "L0021",
+   "ts": "2026-11-12T13:47:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58018 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "text"
+  },
+  {
+   "id": "L0022",
+   "ts": "2026-11-12T13:48:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58019 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "text"
+  },
+  {
+   "id": "L0023",
+   "ts": "2026-11-12T13:49:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58020 gift=false subtotal=60.00 coupons=percent:10 total=54.00",
+   "format": "text"
+  },
+  {
+   "id": "L0024",
+   "ts": "2026-11-12T13:50:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=28",
+   "format": "text"
+  },
+  {
+   "id": "L0025",
+   "ts": "2026-11-12T13:50:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58021 gift=true subtotal=120.00 coupons=none total=120.00",
+   "format": "text"
+  },
+  {
+   "id": "L0026",
+   "ts": "2026-11-12T13:51:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58022 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "text"
+  },
+  {
+   "id": "L0027",
+   "ts": "2026-11-12T13:52:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58023 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "text"
+  },
+  {
+   "id": "L0028",
+   "ts": "2026-11-12T13:53:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58024 gift=false subtotal=100.00 coupons=percent:10 total=90.00",
+   "format": "text"
+  },
+  {
+   "id": "L0029",
+   "ts": "2026-11-12T13:54:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58025 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "text"
+  },
+  {
+   "id": "L0030",
+   "ts": "2026-11-12T13:55:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58026 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "text"
+  },
+  {
+   "id": "L0031",
+   "ts": "2026-11-12T13:56:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58027 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "text"
+  },
+  {
+   "id": "L0032",
+   "ts": "2026-11-12T13:57:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58028 gift=true subtotal=100.00 coupons=percent:10 total=90.00",
+   "format": "text"
+  },
+  {
+   "id": "L0033",
+   "ts": "2026-11-12T13:58:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58029 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "text"
+  },
+  {
+   "id": "L0034",
+   "ts": "2026-11-12T13:58:30Z",
+   "level": "WARN",
+   "logger": "checkout.payments",
+   "message": "PayFast charge timeout after 8s; retry 1 succeeded",
+   "format": "text"
+  },
+  {
+   "id": "L0035",
+   "ts": "2026-11-12T13:59:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58030 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "text"
+  },
+  {
+   "id": "L0036",
+   "ts": "2026-11-12T14:00:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=31",
+   "format": "text"
+  },
+  {
+   "id": "L0037",
+   "ts": "2026-11-12T14:00:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58031 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "text"
+  },
+  {
+   "id": "L0038",
+   "ts": "2026-11-12T14:01:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58032 gift=false subtotal=80.00 coupons=percent:10 total=72.00",
+   "format": "text"
+  },
+  {
+   "id": "L0039",
+   "ts": "2026-11-12T14:02:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58033 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "text"
+  },
+  {
+   "id": "L0040",
+   "ts": "2026-11-12T14:03:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58034 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "text"
+  },
+  {
+   "id": "L0041",
+   "ts": "2026-11-12T14:04:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58035 gift=true subtotal=120.00 coupons=none total=120.00",
+   "format": "text"
+  },
+  {
+   "id": "L0042",
+   "ts": "2026-11-12T14:05:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58036 gift=false subtotal=80.00 coupons=percent:10 total=72.00",
+   "format": "text"
+  },
+  {
+   "id": "L0043",
+   "ts": "2026-11-12T14:06:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58037 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "text"
+  },
+  {
+   "id": "L0044",
+   "ts": "2026-11-12T14:07:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58038 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "text"
+  },
+  {
+   "id": "L0045",
+   "ts": "2026-11-12T14:08:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58039 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "text"
+  },
+  {
+   "id": "L0046",
+   "ts": "2026-11-12T14:09:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58040 gift=false subtotal=100.00 coupons=percent:10 total=90.00",
+   "format": "text"
+  },
+  {
+   "id": "L0047",
+   "ts": "2026-11-12T14:10:00Z",
+   "level": "INFO",
+   "logger": "deploy",
+   "message": "deployed checkout v1.4.2 (a41c9e2, 7d03b5f, c92e1aa)",
+   "format": "json"
+  },
+  {
+   "id": "L0048",
+   "ts": "2026-11-12T14:10:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=18",
+   "format": "json"
+  },
+  {
+   "id": "L0049",
+   "ts": "2026-11-12T14:10:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58041 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  },
+  {
+   "id": "L0050",
+   "ts": "2026-11-12T14:11:12Z",
+   "level": "ERROR",
+   "logger": "checkout.api",
+   "message": "POST /checkout 500 order=O-58042 KeyError: 'shipping_address' (File \"checkout/orders.py\", line 18, in build_gift_order)",
+   "format": "json"
+  },
+  {
+   "id": "L0051",
+   "ts": "2026-11-12T14:12:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58043 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "json"
+  },
+  {
+   "id": "L0052",
+   "ts": "2026-11-12T14:13:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58044 gift=false subtotal=100.00 coupons=percent:10 total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0053",
+   "ts": "2026-11-12T14:14:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58045 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "json"
+  },
+  {
+   "id": "L0054",
+   "ts": "2026-11-12T14:15:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58046 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "json"
+  },
+  {
+   "id": "L0055",
+   "ts": "2026-11-12T14:16:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58047 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "json"
+  },
+  {
+   "id": "L0056",
+   "ts": "2026-11-12T14:17:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58048 gift=false subtotal=80.00 coupons=percent:10 total=64.00",
+   "format": "json"
+  },
+  {
+   "id": "L0057",
+   "ts": "2026-11-12T14:18:12Z",
+   "level": "ERROR",
+   "logger": "checkout.api",
+   "message": "POST /checkout 500 order=O-58049 KeyError: 'shipping_address' (File \"checkout/orders.py\", line 18, in build_gift_order)",
+   "format": "json"
+  },
+  {
+   "id": "L0058",
+   "ts": "2026-11-12T14:19:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58050 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "json"
+  },
+  {
+   "id": "L0059",
+   "ts": "2026-11-12T14:20:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=27",
+   "format": "json"
+  },
+  {
+   "id": "L0060",
+   "ts": "2026-11-12T14:20:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58051 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  },
+  {
+   "id": "L0061",
+   "ts": "2026-11-12T14:21:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58052 gift=false subtotal=100.00 coupons=percent:10 total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0062",
+   "ts": "2026-11-12T14:22:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58053 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  },
+  {
+   "id": "L0063",
+   "ts": "2026-11-12T14:23:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58054 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  },
+  {
+   "id": "L0064",
+   "ts": "2026-11-12T14:24:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58055 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "json"
+  },
+  {
+   "id": "L0065",
+   "ts": "2026-11-12T14:25:12Z",
+   "level": "ERROR",
+   "logger": "checkout.api",
+   "message": "POST /checkout 500 order=O-58056 KeyError: 'shipping_address' (File \"checkout/orders.py\", line 18, in build_gift_order)",
+   "format": "json"
+  },
+  {
+   "id": "L0066",
+   "ts": "2026-11-12T14:26:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58057 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "json"
+  },
+  {
+   "id": "L0067",
+   "ts": "2026-11-12T14:27:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58058 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0068",
+   "ts": "2026-11-12T14:28:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58059 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "json"
+  },
+  {
+   "id": "L0069",
+   "ts": "2026-11-12T14:29:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58060 gift=false subtotal=80.00 coupons=percent:10 total=64.00",
+   "format": "json"
+  },
+  {
+   "id": "L0070",
+   "ts": "2026-11-12T14:30:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=28",
+   "format": "json"
+  },
+  {
+   "id": "L0071",
+   "ts": "2026-11-12T14:30:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58061 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "json"
+  },
+  {
+   "id": "L0072",
+   "ts": "2026-11-12T14:31:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58062 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0073",
+   "ts": "2026-11-12T14:32:12Z",
+   "level": "ERROR",
+   "logger": "checkout.api",
+   "message": "POST /checkout 500 order=O-58063 KeyError: 'shipping_address' (File \"checkout/orders.py\", line 18, in build_gift_order)",
+   "format": "json"
+  },
+  {
+   "id": "L0074",
+   "ts": "2026-11-12T14:33:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58064 gift=false subtotal=80.00 coupons=percent:10 total=64.00",
+   "format": "json"
+  },
+  {
+   "id": "L0075",
+   "ts": "2026-11-12T14:34:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58065 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  },
+  {
+   "id": "L0076",
+   "ts": "2026-11-12T14:35:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58066 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0077",
+   "ts": "2026-11-12T14:36:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58067 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "json"
+  },
+  {
+   "id": "L0078",
+   "ts": "2026-11-12T14:37:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58068 gift=false subtotal=40.00 coupons=percent:10 total=32.00",
+   "format": "json"
+  },
+  {
+   "id": "L0079",
+   "ts": "2026-11-12T14:38:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58069 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  },
+  {
+   "id": "L0080",
+   "ts": "2026-11-12T14:39:12Z",
+   "level": "ERROR",
+   "logger": "checkout.api",
+   "message": "POST /checkout 500 order=O-58070 KeyError: 'shipping_address' (File \"checkout/orders.py\", line 18, in build_gift_order)",
+   "format": "json"
+  },
+  {
+   "id": "L0081",
+   "ts": "2026-11-12T14:40:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=40",
+   "format": "json"
+  },
+  {
+   "id": "L0082",
+   "ts": "2026-11-12T14:40:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58071 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "json"
+  },
+  {
+   "id": "L0083",
+   "ts": "2026-11-12T14:41:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58072 gift=false subtotal=100.00 coupons=percent:10 total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0084",
+   "ts": "2026-11-12T14:41:30Z",
+   "level": "WARN",
+   "logger": "checkout.payments",
+   "message": "PayFast charge timeout after 8s; retry 1 succeeded",
+   "format": "json"
+  },
+  {
+   "id": "L0085",
+   "ts": "2026-11-12T14:42:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58073 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "json"
+  },
+  {
+   "id": "L0086",
+   "ts": "2026-11-12T14:43:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58074 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0087",
+   "ts": "2026-11-12T14:44:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58075 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "json"
+  },
+  {
+   "id": "L0088",
+   "ts": "2026-11-12T14:45:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58076 gift=false subtotal=120.00 coupons=percent:10 total=96.00",
+   "format": "json"
+  },
+  {
+   "id": "L0089",
+   "ts": "2026-11-12T14:46:12Z",
+   "level": "ERROR",
+   "logger": "checkout.api",
+   "message": "POST /checkout 500 order=O-58077 KeyError: 'shipping_address' (File \"checkout/orders.py\", line 18, in build_gift_order)",
+   "format": "json"
+  },
+  {
+   "id": "L0090",
+   "ts": "2026-11-12T14:47:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58078 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "json"
+  },
+  {
+   "id": "L0091",
+   "ts": "2026-11-12T14:48:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58079 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "json"
+  },
+  {
+   "id": "L0092",
+   "ts": "2026-11-12T14:49:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58080 gift=false subtotal=80.00 coupons=percent:10 total=64.00",
+   "format": "json"
+  },
+  {
+   "id": "L0093",
+   "ts": "2026-11-12T14:50:02Z",
+   "level": "INFO",
+   "logger": "checkout.health",
+   "message": "health check ok latency_ms=40",
+   "format": "json"
+  },
+  {
+   "id": "L0094",
+   "ts": "2026-11-12T14:50:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58081 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "json"
+  },
+  {
+   "id": "L0095",
+   "ts": "2026-11-12T14:51:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58082 gift=false subtotal=120.00 coupons=none total=120.00",
+   "format": "json"
+  },
+  {
+   "id": "L0096",
+   "ts": "2026-11-12T14:52:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58083 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  },
+  {
+   "id": "L0097",
+   "ts": "2026-11-12T14:53:12Z",
+   "level": "ERROR",
+   "logger": "checkout.api",
+   "message": "POST /checkout 500 order=O-58084 KeyError: 'shipping_address' (File \"checkout/orders.py\", line 18, in build_gift_order)",
+   "format": "json"
+  },
+  {
+   "id": "L0098",
+   "ts": "2026-11-12T14:54:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58085 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "json"
+  },
+  {
+   "id": "L0099",
+   "ts": "2026-11-12T14:55:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58086 gift=false subtotal=60.00 coupons=none total=60.00",
+   "format": "json"
+  },
+  {
+   "id": "L0100",
+   "ts": "2026-11-12T14:56:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58087 gift=false subtotal=40.00 coupons=none total=40.00",
+   "format": "json"
+  },
+  {
+   "id": "L0101",
+   "ts": "2026-11-12T14:57:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58088 gift=false subtotal=120.00 coupons=percent:10 total=96.00",
+   "format": "json"
+  },
+  {
+   "id": "L0102",
+   "ts": "2026-11-12T14:58:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58089 gift=false subtotal=80.00 coupons=none total=80.00",
+   "format": "json"
+  },
+  {
+   "id": "L0103",
+   "ts": "2026-11-12T14:59:10Z",
+   "level": "INFO",
+   "logger": "checkout.orders",
+   "message": "order placed order=O-58090 gift=false subtotal=100.00 coupons=none total=100.00",
+   "format": "json"
+  }
+ ],
+ "metrics": {
+  "error_rate_pct": [
+   {
+    "ts": "2026-11-12T13:30:00Z",
+    "value": 0.172
+   },
+   {
+    "ts": "2026-11-12T13:31:00Z",
+    "value": -0.08
+   },
+   {
+    "ts": "2026-11-12T13:32:00Z",
+    "value": 0.344
+   },
+   {
+    "ts": "2026-11-12T13:33:00Z",
+    "value": 0.365
+   },
+   {
+    "ts": "2026-11-12T13:34:00Z",
+    "value": 0.251
+   },
+   {
+    "ts": "2026-11-12T13:35:00Z",
+    "value": 0.209
+   },
+   {
+    "ts": "2026-11-12T13:36:00Z",
+    "value": 0.108
+   },
+   {
+    "ts": "2026-11-12T13:37:00Z",
+    "value": 0.382
+   },
+   {
+    "ts": "2026-11-12T13:38:00Z",
+    "value": 0.443
+   },
+   {
+    "ts": "2026-11-12T13:39:00Z",
+    "value": 0.003
+   },
+   {
+    "ts": "2026-11-12T13:40:00Z",
+    "value": -0.066
+   },
+   {
+    "ts": "2026-11-12T13:41:00Z",
+    "value": 0.175
+   },
+   {
+    "ts": "2026-11-12T13:42:00Z",
+    "value": -0.086
+   },
+   {
+    "ts": "2026-11-12T13:43:00Z",
+    "value": 0.028
+   },
+   {
+    "ts": "2026-11-12T13:44:00Z",
+    "value": -0.099
+   },
+   {
+    "ts": "2026-11-12T13:45:00Z",
+    "value": 0.115
+   },
+   {
+    "ts": "2026-11-12T13:46:00Z",
+    "value": 0.326
+   },
+   {
+    "ts": "2026-11-12T13:47:00Z",
+    "value": 0.368
+   },
+   {
+    "ts": "2026-11-12T13:48:00Z",
+    "value": 0.456
+   },
+   {
+    "ts": "2026-11-12T13:49:00Z",
+    "value": 0.278
+   },
+   {
+    "ts": "2026-11-12T13:50:00Z",
+    "value": 0.379
+   },
+   {
+    "ts": "2026-11-12T13:51:00Z",
+    "value": 0.436
+   },
+   {
+    "ts": "2026-11-12T13:52:00Z",
+    "value": 0.023
+   },
+   {
+    "ts": "2026-11-12T13:53:00Z",
+    "value": 0.204
+   },
+   {
+    "ts": "2026-11-12T13:54:00Z",
+    "value": 0.49
+   },
+   {
+    "ts": "2026-11-12T13:55:00Z",
+    "value": 0.154
+   },
+   {
+    "ts": "2026-11-12T13:56:00Z",
+    "value": 0.466
+   },
+   {
+    "ts": "2026-11-12T13:57:00Z",
+    "value": 0.394
+   },
+   {
+    "ts": "2026-11-12T13:58:00Z",
+    "value": 0.142
+   },
+   {
+    "ts": "2026-11-12T13:59:00Z",
+    "value": 0.174
+   },
+   {
+    "ts": "2026-11-12T14:00:00Z",
+    "value": 0.155
+   },
+   {
+    "ts": "2026-11-12T14:01:00Z",
+    "value": -0.016
+   },
+   {
+    "ts": "2026-11-12T14:02:00Z",
+    "value": 0.372
+   },
+   {
+    "ts": "2026-11-12T14:03:00Z",
+    "value": 0.43
+   },
+   {
+    "ts": "2026-11-12T14:04:00Z",
+    "value": 0.049
+   },
+   {
+    "ts": "2026-11-12T14:05:00Z",
+    "value": 0.005
+   },
+   {
+    "ts": "2026-11-12T14:06:00Z",
+    "value": 0.259
+   },
+   {
+    "ts": "2026-11-12T14:07:00Z",
+    "value": 0.206
+   },
+   {
+    "ts": "2026-11-12T14:08:00Z",
+    "value": 0.353
+   },
+   {
+    "ts": "2026-11-12T14:09:00Z",
+    "value": -0.061
+   },
+   {
+    "ts": "2026-11-12T14:10:00Z",
+    "value": 5.886
+   },
+   {
+    "ts": "2026-11-12T14:11:00Z",
+    "value": 6.166
+   },
+   {
+    "ts": "2026-11-12T14:12:00Z",
+    "value": 6.28
+   },
+   {
+    "ts": "2026-11-12T14:13:00Z",
+    "value": 5.979
+   },
+   {
+    "ts": "2026-11-12T14:14:00Z",
+    "value": 6.271
+   },
+   {
+    "ts": "2026-11-12T14:15:00Z",
+    "value": 6.108
+   },
+   {
+    "ts": "2026-11-12T14:16:00Z",
+    "value": 5.883
+   },
+   {
+    "ts": "2026-11-12T14:17:00Z",
+    "value": 5.826
+   },
+   {
+    "ts": "2026-11-12T14:18:00Z",
+    "value": 6.106
+   },
+   {
+    "ts": "2026-11-12T14:19:00Z",
+    "value": 6.138
+   },
+   {
+    "ts": "2026-11-12T14:20:00Z",
+    "value": 5.917
+   },
+   {
+    "ts": "2026-11-12T14:21:00Z",
+    "value": 5.972
+   },
+   {
+    "ts": "2026-11-12T14:22:00Z",
+    "value": 5.968
+   },
+   {
+    "ts": "2026-11-12T14:23:00Z",
+    "value": 6.209
+   },
+   {
+    "ts": "2026-11-12T14:24:00Z",
+    "value": 6.397
+   },
+   {
+    "ts": "2026-11-12T14:25:00Z",
+    "value": 6.196
+   },
+   {
+    "ts": "2026-11-12T14:26:00Z",
+    "value": 6.023
+   },
+   {
+    "ts": "2026-11-12T14:27:00Z",
+    "value": 5.901
+   },
+   {
+    "ts": "2026-11-12T14:28:00Z",
+    "value": 6.058
+   },
+   {
+    "ts": "2026-11-12T14:29:00Z",
+    "value": 6.266
+   },
+   {
+    "ts": "2026-11-12T14:30:00Z",
+    "value": 5.809
+   },
+   {
+    "ts": "2026-11-12T14:31:00Z",
+    "value": 6.048
+   },
+   {
+    "ts": "2026-11-12T14:32:00Z",
+    "value": 6.314
+   },
+   {
+    "ts": "2026-11-12T14:33:00Z",
+    "value": 6.217
+   },
+   {
+    "ts": "2026-11-12T14:34:00Z",
+    "value": 6.356
+   },
+   {
+    "ts": "2026-11-12T14:35:00Z",
+    "value": 6.272
+   },
+   {
+    "ts": "2026-11-12T14:36:00Z",
+    "value": 5.905
+   },
+   {
+    "ts": "2026-11-12T14:37:00Z",
+    "value": 6.286
+   },
+   {
+    "ts": "2026-11-12T14:38:00Z",
+    "value": 5.962
+   },
+   {
+    "ts": "2026-11-12T14:39:00Z",
+    "value": 6.09
+   },
+   {
+    "ts": "2026-11-12T14:40:00Z",
+    "value": 6.285
+   },
+   {
+    "ts": "2026-11-12T14:41:00Z",
+    "value": 5.935
+   },
+   {
+    "ts": "2026-11-12T14:42:00Z",
+    "value": 5.954
+   },
+   {
+    "ts": "2026-11-12T14:43:00Z",
+    "value": 6.094
+   },
+   {
+    "ts": "2026-11-12T14:44:00Z",
+    "value": 6.377
+   },
+   {
+    "ts": "2026-11-12T14:45:00Z",
+    "value": 6.341
+   },
+   {
+    "ts": "2026-11-12T14:46:00Z",
+    "value": 6.285
+   },
+   {
+    "ts": "2026-11-12T14:47:00Z",
+    "value": 6.178
+   },
+   {
+    "ts": "2026-11-12T14:48:00Z",
+    "value": 6.314
+   },
+   {
+    "ts": "2026-11-12T14:49:00Z",
+    "value": 6.15
+   },
+   {
+    "ts": "2026-11-12T14:50:00Z",
+    "value": 6.359
+   },
+   {
+    "ts": "2026-11-12T14:51:00Z",
+    "value": 5.82
+   },
+   {
+    "ts": "2026-11-12T14:52:00Z",
+    "value": 6.105
+   },
+   {
+    "ts": "2026-11-12T14:53:00Z",
+    "value": 6.333
+   },
+   {
+    "ts": "2026-11-12T14:54:00Z",
+    "value": 6.146
+   },
+   {
+    "ts": "2026-11-12T14:55:00Z",
+    "value": 6.233
+   },
+   {
+    "ts": "2026-11-12T14:56:00Z",
+    "value": 5.912
+   },
+   {
+    "ts": "2026-11-12T14:57:00Z",
+    "value": 5.864
+   },
+   {
+    "ts": "2026-11-12T14:58:00Z",
+    "value": 6.318
+   },
+   {
+    "ts": "2026-11-12T14:59:00Z",
+    "value": 6.031
+   }
+  ],
+  "orders_per_min": [
+   {
+    "ts": "2026-11-12T13:30:00Z",
+    "value": 20.133
+   },
+   {
+    "ts": "2026-11-12T13:31:00Z",
+    "value": 20.193
+   },
+   {
+    "ts": "2026-11-12T13:32:00Z",
+    "value": 20.83
+   },
+   {
+    "ts": "2026-11-12T13:33:00Z",
+    "value": 21.067
+   },
+   {
+    "ts": "2026-11-12T13:34:00Z",
+    "value": 20.654
+   },
+   {
+    "ts": "2026-11-12T13:35:00Z",
+    "value": 20.338
+   },
+   {
+    "ts": "2026-11-12T13:36:00Z",
+    "value": 20.23
+   },
+   {
+    "ts": "2026-11-12T13:37:00Z",
+    "value": 19.204
+   },
+   {
+    "ts": "2026-11-12T13:38:00Z",
+    "value": 18.618
+   },
+   {
+    "ts": "2026-11-12T13:39:00Z",
+    "value": 19.839
+   },
+   {
+    "ts": "2026-11-12T13:40:00Z",
+    "value": 18.519
+   },
+   {
+    "ts": "2026-11-12T13:41:00Z",
+    "value": 18.822
+   },
+   {
+    "ts": "2026-11-12T13:42:00Z",
+    "value": 20.134
+   },
+   {
+    "ts": "2026-11-12T13:43:00Z",
+    "value": 19.768
+   },
+   {
+    "ts": "2026-11-12T13:44:00Z",
+    "value": 18.648
+   },
+   {
+    "ts": "2026-11-12T13:45:00Z",
+    "value": 21.426
+   },
+   {
+    "ts": "2026-11-12T13:46:00Z",
+    "value": 20.29
+   },
+   {
+    "ts": "2026-11-12T13:47:00Z",
+    "value": 18.943
+   },
+   {
+    "ts": "2026-11-12T13:48:00Z",
+    "value": 18.514
+   },
+   {
+    "ts": "2026-11-12T13:49:00Z",
+    "value": 20.525
+   },
+   {
+    "ts": "2026-11-12T13:50:00Z",
+    "value": 19.612
+   },
+   {
+    "ts": "2026-11-12T13:51:00Z",
+    "value": 21.444
+   },
+   {
+    "ts": "2026-11-12T13:52:00Z",
+    "value": 19.111
+   },
+   {
+    "ts": "2026-11-12T13:53:00Z",
+    "value": 21.425
+   },
+   {
+    "ts": "2026-11-12T13:54:00Z",
+    "value": 19.239
+   },
+   {
+    "ts": "2026-11-12T13:55:00Z",
+    "value": 18.763
+   },
+   {
+    "ts": "2026-11-12T13:56:00Z",
+    "value": 20.296
+   },
+   {
+    "ts": "2026-11-12T13:57:00Z",
+    "value": 19.907
+   },
+   {
+    "ts": "2026-11-12T13:58:00Z",
+    "value": 20.428
+   },
+   {
+    "ts": "2026-11-12T13:59:00Z",
+    "value": 21.332
+   },
+   {
+    "ts": "2026-11-12T14:00:00Z",
+    "value": 19.376
+   },
+   {
+    "ts": "2026-11-12T14:01:00Z",
+    "value": 21.353
+   },
+   {
+    "ts": "2026-11-12T14:02:00Z",
+    "value": 19.953
+   },
+   {
+    "ts": "2026-11-12T14:03:00Z",
+    "value": 19.826
+   },
+   {
+    "ts": "2026-11-12T14:04:00Z",
+    "value": 20.429
+   },
+   {
+    "ts": "2026-11-12T14:05:00Z",
+    "value": 21.273
+   },
+   {
+    "ts": "2026-11-12T14:06:00Z",
+    "value": 19.253
+   },
+   {
+    "ts": "2026-11-12T14:07:00Z",
+    "value": 20.443
+   },
+   {
+    "ts": "2026-11-12T14:08:00Z",
+    "value": 20.949
+   },
+   {
+    "ts": "2026-11-12T14:09:00Z",
+    "value": 20.61
+   },
+   {
+    "ts": "2026-11-12T14:10:00Z",
+    "value": 18.699
+   },
+   {
+    "ts": "2026-11-12T14:11:00Z",
+    "value": 18.832
+   },
+   {
+    "ts": "2026-11-12T14:12:00Z",
+    "value": 17.674
+   },
+   {
+    "ts": "2026-11-12T14:13:00Z",
+    "value": 18.856
+   },
+   {
+    "ts": "2026-11-12T14:14:00Z",
+    "value": 17.955
+   },
+   {
+    "ts": "2026-11-12T14:15:00Z",
+    "value": 20.13
+   },
+   {
+    "ts": "2026-11-12T14:16:00Z",
+    "value": 20.217
+   },
+   {
+    "ts": "2026-11-12T14:17:00Z",
+    "value": 19.278
+   },
+   {
+    "ts": "2026-11-12T14:18:00Z",
+    "value": 20.267
+   },
+   {
+    "ts": "2026-11-12T14:19:00Z",
+    "value": 18.876
+   },
+   {
+    "ts": "2026-11-12T14:20:00Z",
+    "value": 17.744
+   },
+   {
+    "ts": "2026-11-12T14:21:00Z",
+    "value": 18.268
+   },
+   {
+    "ts": "2026-11-12T14:22:00Z",
+    "value": 18.425
+   },
+   {
+    "ts": "2026-11-12T14:23:00Z",
+    "value": 18.706
+   },
+   {
+    "ts": "2026-11-12T14:24:00Z",
+    "value": 18.575
+   },
+   {
+    "ts": "2026-11-12T14:25:00Z",
+    "value": 17.975
+   },
+   {
+    "ts": "2026-11-12T14:26:00Z",
+    "value": 18.608
+   },
+   {
+    "ts": "2026-11-12T14:27:00Z",
+    "value": 19.472
+   },
+   {
+    "ts": "2026-11-12T14:28:00Z",
+    "value": 19.253
+   },
+   {
+    "ts": "2026-11-12T14:29:00Z",
+    "value": 20.259
+   },
+   {
+    "ts": "2026-11-12T14:30:00Z",
+    "value": 17.969
+   },
+   {
+    "ts": "2026-11-12T14:31:00Z",
+    "value": 18.222
+   },
+   {
+    "ts": "2026-11-12T14:32:00Z",
+    "value": 19.228
+   },
+   {
+    "ts": "2026-11-12T14:33:00Z",
+    "value": 19.347
+   },
+   {
+    "ts": "2026-11-12T14:34:00Z",
+    "value": 19.713
+   },
+   {
+    "ts": "2026-11-12T14:35:00Z",
+    "value": 17.94
+   },
+   {
+    "ts": "2026-11-12T14:36:00Z",
+    "value": 19.157
+   },
+   {
+    "ts": "2026-11-12T14:37:00Z",
+    "value": 19.326
+   },
+   {
+    "ts": "2026-11-12T14:38:00Z",
+    "value": 18.579
+   },
+   {
+    "ts": "2026-11-12T14:39:00Z",
+    "value": 19.602
+   },
+   {
+    "ts": "2026-11-12T14:40:00Z",
+    "value": 19.578
+   },
+   {
+    "ts": "2026-11-12T14:41:00Z",
+    "value": 17.95
+   },
+   {
+    "ts": "2026-11-12T14:42:00Z",
+    "value": 17.702
+   },
+   {
+    "ts": "2026-11-12T14:43:00Z",
+    "value": 19.233
+   },
+   {
+    "ts": "2026-11-12T14:44:00Z",
+    "value": 17.818
+   },
+   {
+    "ts": "2026-11-12T14:45:00Z",
+    "value": 19.853
+   },
+   {
+    "ts": "2026-11-12T14:46:00Z",
+    "value": 20.459
+   },
+   {
+    "ts": "2026-11-12T14:47:00Z",
+    "value": 18.991
+   },
+   {
+    "ts": "2026-11-12T14:48:00Z",
+    "value": 19.051
+   },
+   {
+    "ts": "2026-11-12T14:49:00Z",
+    "value": 20.072
+   },
+   {
+    "ts": "2026-11-12T14:50:00Z",
+    "value": 17.689
+   },
+   {
+    "ts": "2026-11-12T14:51:00Z",
+    "value": 18.163
+   },
+   {
+    "ts": "2026-11-12T14:52:00Z",
+    "value": 20.313
+   },
+   {
+    "ts": "2026-11-12T14:53:00Z",
+    "value": 19.342
+   },
+   {
+    "ts": "2026-11-12T14:54:00Z",
+    "value": 18.951
+   },
+   {
+    "ts": "2026-11-12T14:55:00Z",
+    "value": 20.399
+   },
+   {
+    "ts": "2026-11-12T14:56:00Z",
+    "value": 19.946
+   },
+   {
+    "ts": "2026-11-12T14:57:00Z",
+    "value": 19.289
+   },
+   {
+    "ts": "2026-11-12T14:58:00Z",
+    "value": 19.277
+   },
+   {
+    "ts": "2026-11-12T14:59:00Z",
+    "value": 20.102
+   }
+  ],
+  "avg_order_value_usd": [
+   {
+    "ts": "2026-11-12T13:30:00Z",
+    "value": 74.004
+   },
+   {
+    "ts": "2026-11-12T13:31:00Z",
+    "value": 72.133
+   },
+   {
+    "ts": "2026-11-12T13:32:00Z",
+    "value": 72.084
+   },
+   {
+    "ts": "2026-11-12T13:33:00Z",
+    "value": 74.594
+   },
+   {
+    "ts": "2026-11-12T13:34:00Z",
+    "value": 72.823
+   },
+   {
+    "ts": "2026-11-12T13:35:00Z",
+    "value": 72.564
+   },
+   {
+    "ts": "2026-11-12T13:36:00Z",
+    "value": 74.49
+   },
+   {
+    "ts": "2026-11-12T13:37:00Z",
+    "value": 75.081
+   },
+   {
+    "ts": "2026-11-12T13:38:00Z",
+    "value": 72.125
+   },
+   {
+    "ts": "2026-11-12T13:39:00Z",
+    "value": 72.589
+   },
+   {
+    "ts": "2026-11-12T13:40:00Z",
+    "value": 72.298
+   },
+   {
+    "ts": "2026-11-12T13:41:00Z",
+    "value": 75.064
+   },
+   {
+    "ts": "2026-11-12T13:42:00Z",
+    "value": 73.963
+   },
+   {
+    "ts": "2026-11-12T13:43:00Z",
+    "value": 73.623
+   },
+   {
+    "ts": "2026-11-12T13:44:00Z",
+    "value": 74.416
+   },
+   {
+    "ts": "2026-11-12T13:45:00Z",
+    "value": 74.499
+   },
+   {
+    "ts": "2026-11-12T13:46:00Z",
+    "value": 74.439
+   },
+   {
+    "ts": "2026-11-12T13:47:00Z",
+    "value": 74.991
+   },
+   {
+    "ts": "2026-11-12T13:48:00Z",
+    "value": 74.075
+   },
+   {
+    "ts": "2026-11-12T13:49:00Z",
+    "value": 73.837
+   },
+   {
+    "ts": "2026-11-12T13:50:00Z",
+    "value": 72.379
+   },
+   {
+    "ts": "2026-11-12T13:51:00Z",
+    "value": 75.541
+   },
+   {
+    "ts": "2026-11-12T13:52:00Z",
+    "value": 72.498
+   },
+   {
+    "ts": "2026-11-12T13:53:00Z",
+    "value": 75.469
+   },
+   {
+    "ts": "2026-11-12T13:54:00Z",
+    "value": 74.807
+   },
+   {
+    "ts": "2026-11-12T13:55:00Z",
+    "value": 73.491
+   },
+   {
+    "ts": "2026-11-12T13:56:00Z",
+    "value": 72.303
+   },
+   {
+    "ts": "2026-11-12T13:57:00Z",
+    "value": 73.815
+   },
+   {
+    "ts": "2026-11-12T13:58:00Z",
+    "value": 74.658
+   },
+   {
+    "ts": "2026-11-12T13:59:00Z",
+    "value": 73.142
+   },
+   {
+    "ts": "2026-11-12T14:00:00Z",
+    "value": 73.186
+   },
+   {
+    "ts": "2026-11-12T14:01:00Z",
+    "value": 73.725
+   },
+   {
+    "ts": "2026-11-12T14:02:00Z",
+    "value": 72.439
+   },
+   {
+    "ts": "2026-11-12T14:03:00Z",
+    "value": 74.203
+   },
+   {
+    "ts": "2026-11-12T14:04:00Z",
+    "value": 72.034
+   },
+   {
+    "ts": "2026-11-12T14:05:00Z",
+    "value": 75.624
+   },
+   {
+    "ts": "2026-11-12T14:06:00Z",
+    "value": 72.842
+   },
+   {
+    "ts": "2026-11-12T14:07:00Z",
+    "value": 75.354
+   },
+   {
+    "ts": "2026-11-12T14:08:00Z",
+    "value": 72.735
+   },
+   {
+    "ts": "2026-11-12T14:09:00Z",
+    "value": 74.816
+   },
+   {
+    "ts": "2026-11-12T14:10:00Z",
+    "value": 74.826
+   },
+   {
+    "ts": "2026-11-12T14:11:00Z",
+    "value": 74.534
+   },
+   {
+    "ts": "2026-11-12T14:12:00Z",
+    "value": 75.446
+   },
+   {
+    "ts": "2026-11-12T14:13:00Z",
+    "value": 75.846
+   },
+   {
+    "ts": "2026-11-12T14:14:00Z",
+    "value": 74.855
+   },
+   {
+    "ts": "2026-11-12T14:15:00Z",
+    "value": 74.525
+   },
+   {
+    "ts": "2026-11-12T14:16:00Z",
+    "value": 75.765
+   },
+   {
+    "ts": "2026-11-12T14:17:00Z",
+    "value": 74.304
+   },
+   {
+    "ts": "2026-11-12T14:18:00Z",
+    "value": 72.333
+   },
+   {
+    "ts": "2026-11-12T14:19:00Z",
+    "value": 73.292
+   },
+   {
+    "ts": "2026-11-12T14:20:00Z",
+    "value": 75.197
+   },
+   {
+    "ts": "2026-11-12T14:21:00Z",
+    "value": 73.065
+   },
+   {
+    "ts": "2026-11-12T14:22:00Z",
+    "value": 72.586
+   },
+   {
+    "ts": "2026-11-12T14:23:00Z",
+    "value": 73.148
+   },
+   {
+    "ts": "2026-11-12T14:24:00Z",
+    "value": 74.76
+   },
+   {
+    "ts": "2026-11-12T14:25:00Z",
+    "value": 73.995
+   },
+   {
+    "ts": "2026-11-12T14:26:00Z",
+    "value": 74.321
+   },
+   {
+    "ts": "2026-11-12T14:27:00Z",
+    "value": 74.141
+   },
+   {
+    "ts": "2026-11-12T14:28:00Z",
+    "value": 74.434
+   },
+   {
+    "ts": "2026-11-12T14:29:00Z",
+    "value": 75.724
+   },
+   {
+    "ts": "2026-11-12T14:30:00Z",
+    "value": 72.621
+   },
+   {
+    "ts": "2026-11-12T14:31:00Z",
+    "value": 72.723
+   },
+   {
+    "ts": "2026-11-12T14:32:00Z",
+    "value": 73.936
+   },
+   {
+    "ts": "2026-11-12T14:33:00Z",
+    "value": 74.076
+   },
+   {
+    "ts": "2026-11-12T14:34:00Z",
+    "value": 75.889
+   },
+   {
+    "ts": "2026-11-12T14:35:00Z",
+    "value": 75.332
+   },
+   {
+    "ts": "2026-11-12T14:36:00Z",
+    "value": 75.459
+   },
+   {
+    "ts": "2026-11-12T14:37:00Z",
+    "value": 74.582
+   },
+   {
+    "ts": "2026-11-12T14:38:00Z",
+    "value": 75.872
+   },
+   {
+    "ts": "2026-11-12T14:39:00Z",
+    "value": 72.38
+   },
+   {
+    "ts": "2026-11-12T14:40:00Z",
+    "value": 72.624
+   },
+   {
+    "ts": "2026-11-12T14:41:00Z",
+    "value": 74.609
+   },
+   {
+    "ts": "2026-11-12T14:42:00Z",
+    "value": 74.713
+   },
+   {
+    "ts": "2026-11-12T14:43:00Z",
+    "value": 72.03
+   },
+   {
+    "ts": "2026-11-12T14:44:00Z",
+    "value": 75.398
+   },
+   {
+    "ts": "2026-11-12T14:45:00Z",
+    "value": 74.798
+   },
+   {
+    "ts": "2026-11-12T14:46:00Z",
+    "value": 75.649
+   },
+   {
+    "ts": "2026-11-12T14:47:00Z",
+    "value": 74.297
+   },
+   {
+    "ts": "2026-11-12T14:48:00Z",
+    "value": 74.99
+   },
+   {
+    "ts": "2026-11-12T14:49:00Z",
+    "value": 73.693
+   },
+   {
+    "ts": "2026-11-12T14:50:00Z",
+    "value": 72.919
+   },
+   {
+    "ts": "2026-11-12T14:51:00Z",
+    "value": 73.475
+   },
+   {
+    "ts": "2026-11-12T14:52:00Z",
+    "value": 72.384
+   },
+   {
+    "ts": "2026-11-12T14:53:00Z",
+    "value": 72.517
+   },
+   {
+    "ts": "2026-11-12T14:54:00Z",
+    "value": 73.523
+   },
+   {
+    "ts": "2026-11-12T14:55:00Z",
+    "value": 75.501
+   },
+   {
+    "ts": "2026-11-12T14:56:00Z",
+    "value": 74.842
+   },
+   {
+    "ts": "2026-11-12T14:57:00Z",
+    "value": 73.553
+   },
+   {
+    "ts": "2026-11-12T14:58:00Z",
+    "value": 73.805
+   },
+   {
+    "ts": "2026-11-12T14:59:00Z",
+    "value": 75.503
+   }
+  ],
+  "payment_timeouts_per_min": [
+   {
+    "ts": "2026-11-12T13:30:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:31:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:32:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:33:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T13:34:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:35:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:36:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:37:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:38:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T13:39:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:40:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:41:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:42:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:43:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:44:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:45:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:46:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:47:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:48:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T13:49:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:50:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:51:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:52:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T13:53:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T13:54:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:55:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T13:56:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:57:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T13:58:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T13:59:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:00:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:01:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:02:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:03:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:04:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:05:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:06:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:07:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:08:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:09:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:10:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:11:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:12:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:13:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:14:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:15:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:16:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:17:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:18:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:19:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:20:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:21:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:22:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:23:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:24:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:25:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:26:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:27:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:28:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:29:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:30:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:31:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:32:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:33:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:34:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:35:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:36:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:37:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:38:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:39:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:40:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:41:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:42:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:43:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:44:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:45:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:46:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:47:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:48:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:49:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:50:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:51:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:52:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:53:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:54:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:55:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:56:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:57:00Z",
+    "value": 0
+   },
+   {
+    "ts": "2026-11-12T14:58:00Z",
+    "value": 1
+   },
+   {
+    "ts": "2026-11-12T14:59:00Z",
+    "value": 0
+   }
+  ]
+ },
+ "notes": [
+  {
+   "id": "N1",
+   "source": "support",
+   "ts": "2026-11-12T14:21:00Z",
+   "text": "Two customers report 'something went wrong' when sending an order as a gift."
+  }
+ ]
+}

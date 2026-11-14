@@ -1,0 +1,12 @@
+{
+  "mode": "live",
+  "model": "claude-opus-5-5",
+  "runAt": "2026-11-14T19:19:15Z",
+  "incidents": 3,
+  "rootCauseAccuracy": 1.0,
+  "verdictAccuracy": 1.0,
+  "evidenceVerifiedRate": 1.0,
+  "redHerringsBlamed": 0,
+  "avgDelegations": 3.0,
+  "totalCostUsd": 0.8104
+}

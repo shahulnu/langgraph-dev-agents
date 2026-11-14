@@ -1,6 +1,6 @@
 # LangGraph dev agents
 
-AI agents for engineering teams, built with **LangGraph** and **LangChain** on Claude. Part of
+AI agents for engineering teams, built with **LangGraph** and **LangChain** on Claude: a Code Review Agent with parallel reviewers, and an Incident Debugger with an orchestrator and specialist agents. Part of
 [Shahul Ummarali's AI portfolio](https://github.com/shahulnu/ai-portfolio): the site shows these agents
 in its Developer tools section.
 
@@ -41,6 +41,51 @@ one off-by-one bug with a weak test and a planted instruction, one clean refacto
 
 Three synthetic pull requests show that the pipeline works; they aren't a benchmark. See `evals/code-review-summary.json`.
 
+## Incident Debugger
+
+A multi-agent investigation of a production incident. An **orchestrator** delegates to specialists, reads what they
+report, and changes course as evidence comes in. Code accepts a root cause as **confirmed** only when a test fails on the
+deployed version and passes on the version before it.
+
+```
+orchestrator ──Command(goto)──► delegate ─► specialist subgraph (own tools and tool loop) ─┐
+     ▲                                                                                    │
+     └────────────────────────── case file (verified evidence) ◄─────────────────────────┘
+orchestrator ──conclude or budget──► report ─► verdict (code)
+```
+
+| Agent or step | Who | What it does |
+|---|---|---|
+| Orchestrator | Claude | Each turn: delegate one task or conclude (structured output; LangGraph routes with `Command(goto)`). |
+| Log analyst | Claude + tools | `error_summary`, `search_logs`, `get_notes` |
+| Metrics analyst | Claude + tools | `get_metrics`, `get_deploys`, `get_notes` |
+| Change investigator | Claude + tools | `list_commits`, `show_diff`, `get_deploys` |
+| Code reader | Claude + tools | `read_file`, `grep_code` on v1.4.1 or v1.4.2 |
+| Reproducer | Claude writes, code runs | One pytest test, checked (allowed imports only; no files, network, `eval` or dunder access), then run in a subprocess with a timeout on copies of both versions. |
+| Budget, evidence, verdict | Code | At most 8 delegations. Every cited log line, commit, `file:line`, metric and note must exist, or it's dropped before the orchestrator sees it. Verdict: confirmed, likely, not caused by the deploy, or inconclusive. |
+
+The synthetic world (`data/incident`) is a small checkout service in two versions, a three-commit deploy, and logs,
+metrics and notes for three incidents: a `KeyError` on the gift-order path, wrong totals with no errors at all, and a
+vendor payment outage that started 18 minutes before the deploy. A log-format commit in the deploy is a red herring.
+
+**Results** (`uv run python scripts/eval_incident.py --live`):
+
+| Root cause | Verdicts | Evidence verified | Red herrings blamed | Delegations per incident | Cost |
+|---|---|---|---|---|---|
+| 3/3 | 3/3 | 100% | 0 | 3.0 of 8 | $0.81 |
+
+The first live run concluded the wrong-totals incident before the faulty line was cited, so the report described the
+location in words; a prompt rule (pin the exact line before concluding) fixed it.
+
+```bash
+uv run python scripts/make_incidents.py                  # regenerate the incidents' logs, metrics and notes
+uv run python scripts/eval_incident.py                   # replay (free; still runs tool calls and tests)
+uv run python scripts/eval_incident.py --live --record   # live, and save the runs for replay (billed)
+```
+
+API: `GET /api/incident/incidents`, `GET /api/incident/investigate` (`{ liveAvailable }`),
+`POST /api/incident/investigate` with `{ "incidentId": "INC-201", "mode": "replay" | "live" }`.
+
 ## Run it
 
 Requires [uv](https://docs.astral.sh/uv/).
@@ -72,6 +117,8 @@ recording, run this from this folder; it writes the results and eval summary int
 ```bash
 uv run python scripts/export_site.py
 ```
+
+It exports both agents' recorded runs. For live Incident Debugger runs from the site, set `INCIDENT_ENGINE_URL=http://localhost:8090`.
 
 For live reviews from the site, run the service and set `CODE_REVIEW_ENGINE_URL=http://localhost:8090` in the site's
 `.env.local`.
